@@ -1,0 +1,15 @@
+{
+    "plugins": [
+        "cpu",
+        "mem",
+        "disk",
+        "network"
+    ],
+    "server": {
+        "host": "0.0.0.0",
+        "port": 24680,
+        "allows": [
+        "127.0.0.1"
+        ]
+    }
+}

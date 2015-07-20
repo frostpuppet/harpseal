@@ -64,3 +64,6 @@ target/
 
 # IntelliJ
 .idea/
+
+# Project
+config.json
