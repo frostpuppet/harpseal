@@ -20,7 +20,7 @@ class Harpseal(object):
         self.loop = loop
         self.web_task = asyncio.Task(self.web.execute())
         self.beat_task = asyncio.Task(self.beats())
-        yield from asyncio.wait([self.web_task, self.beats, ])
+        yield from asyncio.wait([self.web_task, self.beat_task, ])
         yield from self.periodic_task()
 
     @asyncio.coroutine
