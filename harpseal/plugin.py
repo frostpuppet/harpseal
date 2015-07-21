@@ -62,3 +62,17 @@ class Plugin(object):
             'every': self.every,
         }
         return properties
+
+class PluginMixin(object):
+    """
+    Mixin class for Plugin management
+    """
+    def _plugin_mixin_assert(self):
+        if self.__class__.__name__ != 'Harpseal':
+            raise AssertionError("This mixin class must be inherited from 'Harpseal' class.")
+        if not hasattr(self, 'plugins') or not isinstance(self.plugins, tuple):
+            raise TypeError("The .plugins attribute must be a tuple.")
+
+    def register_plugins(self):
+        _plugin_mixin_assert()
+
