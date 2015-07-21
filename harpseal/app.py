@@ -1,9 +1,6 @@
 """
 harpseal.app
 ~~~~~~~~~~~~
-
-:copyright: (c) 2015 by SuHun Han (ssut).
-:license: GPL v2, see LICENSE for more details.
 """
 import asyncio
 import aiohttp
