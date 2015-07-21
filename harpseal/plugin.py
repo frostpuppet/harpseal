@@ -10,6 +10,7 @@ import inspect
 from importlib import import_module
 
 from harpseal.utils.commands import execute
+from harpseal.classes import PeriodicTask
 
 class Plugin(object):
     """
@@ -27,11 +28,12 @@ class Plugin(object):
         """
         Execute plugin
         """
-        if self.provider.__name__ != 'coroutine':
-            raise TypeError("You must wrap the function with '@asyncio.coroutine' decorator.")
-        data = yield from self.provider()
-        if data is None:
-            raise AssertionError("The data is not passed from the .provider() function.")
+        # if self.provider.__name__ != 'coroutine':
+        #     raise TypeError("You must wrap the function with '@asyncio.coroutine' decorator.")
+        return 123
+        # data = yield from self.provider()
+        # if data is None:
+        #     raise AssertionError("The data is not passed from the .provider() function.")
 
     @asyncio.coroutine
     def _call(self, command):
@@ -65,18 +67,24 @@ class Plugin(object):
         }
         return properties
 
-class PluginMixin(object):
+class _PluginMixin(object):
+    @staticmethod
+    def plugin_mixin_assert(func):
+        def decorator(self):
+            if self.__class__.__name__ != 'Harpseal':
+                raise AssertionError("This mixin class must be inherited from 'Harpseal' class.")
+            if not hasattr(self, 'plugins') or not isinstance(self.plugins, tuple):
+                raise TypeError("The .plugins attribute must be a tuple.")
+            func(self)
+        return decorator
+
+class PluginMixin(_PluginMixin):
     """
     Mixin class for Plugin management
     """
-    def _plugin_mixin_assert(self):
-        if self.__class__.__name__ != 'Harpseal':
-            raise AssertionError("This mixin class must be inherited from 'Harpseal' class.")
-        if not hasattr(self, 'plugins') or not isinstance(self.plugins, tuple):
-            raise TypeError("The .plugins attribute must be a tuple.")
 
+    @_PluginMixin.plugin_mixin_assert
     def register_plugins(self):
-        self._plugin_mixin_assert()
         for name in self.config['plugins']:
             modname = 'harpseal.plugins.{}'.format(name)
             plugin = None
@@ -89,5 +97,13 @@ class PluginMixin(object):
                     lambda member: inspect.isclass(member) and \
                            member.__module__ == modname)[0]
                 instance = cls()
-                self.plugins += (plugin, )
+                self.plugins += (instance, )
+
+    @_PluginMixin.plugin_mixin_assert
+    def run_plugins(self):
+        for plugin in self.plugins:
+            task = PeriodicTask(plugin=plugin, app=self)
+            task.start()
+            self.tasks += (task, )
+
 

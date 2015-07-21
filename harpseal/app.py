@@ -18,12 +18,14 @@ class Harpseal(PluginMixin):
         self.queue = asyncio.Queue()
         self.config = Config(path=conf)
         self.plugins = tuple()
+        self.tasks = tuple()
         Plugin._app = self
 
     @asyncio.coroutine
     def start(self, loop):
         self.loop = loop
         self.register_plugins()
+        self.run_plugins()
         self.web_task = asyncio.Task(self.web.execute())
         yield from asyncio.wait([self.web_task, ])
         yield from self.periodic_task()
