@@ -28,12 +28,12 @@ class Plugin(object):
         """
         Execute plugin
         """
-        # if self.provider.__name__ != 'coroutine':
-        #     raise TypeError("You must wrap the function with '@asyncio.coroutine' decorator.")
-        return 123
-        # data = yield from self.provider()
-        # if data is None:
-        #     raise AssertionError("The data is not passed from the .provider() function.")
+        if not asyncio.iscoroutinefunction(self.provider):
+            raise TypeError("You must wrap the function with '@asyncio.coroutine' decorator.")
+        data = yield from self.provider()
+        if data is None:
+            raise AssertionError("The data is not passed from the .provider() function.")
+        return data
 
     @asyncio.coroutine
     def _call(self, command):
