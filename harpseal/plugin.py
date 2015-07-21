@@ -6,6 +6,8 @@
 
 """
 import asyncio
+import inspect
+from importlib import import_module
 
 from harpseal.utils.commands import execute
 
@@ -74,5 +76,18 @@ class PluginMixin(object):
             raise TypeError("The .plugins attribute must be a tuple.")
 
     def register_plugins(self):
-        _plugin_mixin_assert()
+        self._plugin_mixin_assert()
+        for name in self.config['plugins']:
+            modname = 'harpseal.plugins.{}'.format(name)
+            plugin = None
+            try:
+                plugin = import_module(modname)
+            except ImportError:
+                raise RuntimeWarning("Cannot load {} plugin due to import error.".format(modname))
+            else:
+                _, cls = inspect.getmembers(plugin,
+                    lambda member: inspect.isclass(member) and \
+                           member.__module__ == modname)[0]
+                instance = cls()
+                self.plugins += (plugin, )
 

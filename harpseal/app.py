@@ -1,31 +1,35 @@
 """
-harpseal.app
-~~~~~~~~~~~~
+    harpseal.app
+    ~~~~~~~~~~~~
+    
+    Harpseal app, includes web server and harpseal daemon
 """
 import asyncio
 import aiohttp
 
+from harpseal.conf import Config
+from harpseal.plugin import Plugin, PluginMixin
 from harpseal.web import WebServer
 
-class Harpseal(object):
-    def __init__(self):
+class Harpseal(PluginMixin):
+    def __init__(self, conf='config.json'):
         self.loop = None
         self.web = WebServer(self)
+        self.queue = asyncio.Queue()
+        self.config = Config(path=conf)
+        self.plugins = tuple()
+        Plugin._app = self
 
     @asyncio.coroutine
     def start(self, loop):
         self.loop = loop
+        self.register_plugins()
         self.web_task = asyncio.Task(self.web.execute())
-        self.beat_task = asyncio.Task(self.beats())
-        yield from asyncio.wait([self.web_task, self.beat_task, ])
+        yield from asyncio.wait([self.web_task, ])
         yield from self.periodic_task()
 
     @asyncio.coroutine
     def periodic_task(self):
         while 1:
-            # TODO: get a task from the queue and execute then grab and store its result
-            yield from asyncio.sleep(1)
-
-    @asyncio.coroutine
-    def beats(self):
-        pass
+            result = yield from self.queue.get()
+            print(result)
