@@ -11,7 +11,7 @@ from collections import defaultdict
 from importlib import import_module
 
 from harpseal.utils.commands import execute
-from harpseal.classes import PeriodicTask
+from harpseal.classes import PeriodicTask, StrictDict
 from harpseal.models import make_model
 
 class Plugin(object):
@@ -28,6 +28,7 @@ class Plugin(object):
     def __init__(self):
         self.models = {}
         self.fields = defaultdict(lambda: [])
+        self.field_types = defaultdict(lambda: 'line')  # line, stack, full-stack, bar
         if hasattr(self, 'init'):
             self.init()
         for k, v in self.fields.items():
@@ -38,10 +39,12 @@ class Plugin(object):
         for name, fields in self.fields.items():
             modelname = '{}_{}'.format(self.name.title(), name)
             self.models[name] = make_model(modelname, fields)
-        print(self.models)
 
-    def validate(self):
-        pass
+    def data_form(self):
+        form = {}
+        for name, fields in self.fields.items():
+            form[name] = StrictDict(fields)
+        return form
 
     @asyncio.coroutine
     def execute(self):
