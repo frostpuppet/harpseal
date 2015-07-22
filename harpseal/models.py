@@ -27,7 +27,7 @@ def make_model(name, args):
     """
     Create a new model with given name and arguments
     """
-    cls = type(name, (BaseModel, ), {'__init__': __init__})
+    cls = type(name, (BaseModel, ), {})
     for arg in args:
         if arg[1] is int:
             field = LongField()
