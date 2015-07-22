@@ -6,7 +6,7 @@
         "network"
     ],
     "mongo": {
-        "name": "harpseal",
+        "db": "harpseal",
         "_user": "user",
         "_pass": "pass",
         "_host": "mongodb://admin:qwerty@localhost/harpseal"
