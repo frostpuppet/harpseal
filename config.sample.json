@@ -5,6 +5,12 @@
         "disk",
         "network"
     ],
+    "mongo": {
+        "name": "harpseal",
+        "_user": "user",
+        "_pass": "pass",
+        "_host": "mongodb://admin:qwerty@localhost/harpseal"
+    },
     "server": {
         "host": "0.0.0.0",
         "port": 24680,
