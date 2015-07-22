@@ -11,23 +11,16 @@ from mongoengine import *
 
 __all__ = ['make_model']
 
-class BaseModel(DynamicDocument):
-    """
-    BaseModel for harpseal models
-    """
-
-    created_at = DateTimeField()
-
-    def save(self, *args, **kwargs):
-        if not self.created_at:
-            self.created_at = datetime.now()
-        return super(BaseModel, self).save(*args, **kwargs)
-
 def make_model(name, args):
     """
     Create a new model with given name and arguments
     """
-    cls = type(name, (BaseModel, ), {})
+    def save(self, *args, **kwargs):
+        if not self.created_at:
+            self.created_at = datetime.now()
+        return super(BaseModel, self).save(*args, **kwargs)
+    cls = type(name, (DynamicDocument, ), {'save': save})
+    setattr(cls, 'created_at', DateTimeField())
     for arg in args:
         if arg[1] is int:
             field = LongField()
