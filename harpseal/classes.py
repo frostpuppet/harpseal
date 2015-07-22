@@ -6,7 +6,7 @@
 """
 import asyncio
 
-__all__ = ['PeriodicTask']
+__all__ = ['PeriodicTask', 'StrictDict']
 
 class PeriodicTask(object):
     """
@@ -34,3 +34,23 @@ class PeriodicTask(object):
 
     def start(self):
         self._task = asyncio.Task(self._run())
+
+
+class StrictDict(object):
+    def __init__(self, fields):
+        self.fields = fields
+        self.keys = [k for k, _ in self.fields]
+        self.types = {k: t for k, t in self.fields}
+        self.values = {k: None for k, _ in self.fields}
+
+    def get(self, name):
+        if name not in self.keys:
+            raise KeyError("The key '{}' does not exist in the dict.".format(name))
+        return self.values.get(name)
+
+    def set(self, name, value):
+        if name not in self.keys:
+            raise KeyError("The key '{}' does not exist in the dict.".format(name))
+        if not isinstance(value, self.types[name]):
+            raise TypeError("TypeError")
+        self.values[name] = value
