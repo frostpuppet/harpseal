@@ -7,10 +7,12 @@
 """
 import asyncio
 import inspect
+from collections import defaultdict
 from importlib import import_module
 
 from harpseal.utils.commands import execute
 from harpseal.classes import PeriodicTask
+from harpseal.models import make_model
 
 class Plugin(object):
     """
@@ -22,6 +24,24 @@ class Plugin(object):
     every = 1
 
     _app = None
+
+    def __init__(self):
+        self.models = {}
+        self.fields = defaultdict(lambda: [])
+        if hasattr(self, 'init'):
+            self.init()
+        for k, v in self.fields.items():
+            self.fields[k] = tuple(v)
+        self.init_model()
+
+    def init_model(self):
+        for name, fields in self.fields.items():
+            modelname = '{}_{}'.format(self.name.title(), name)
+            self.models[name] = make_model(modelname, fields)
+        print(self.models)
+
+    def validate(self):
+        pass
 
     @asyncio.coroutine
     def execute(self):
@@ -105,5 +125,3 @@ class PluginMixin(_PluginMixin):
             task = PeriodicTask(plugin=plugin, app=self)
             task.start()
             self.tasks += (task, )
-
-
