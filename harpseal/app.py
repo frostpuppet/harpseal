@@ -35,8 +35,10 @@ class Harpseal(PluginMixin):
         self.register_plugins()
         self.run_plugins()
         self.web_task = asyncio.Task(self.web.execute())
-        yield from asyncio.wait([self.web_task, ])
-        yield from self.periodic_task()
+        self.beats = asyncio.Task(self.periodic_task())
+        done, *pending = yield from asyncio.wait([self.web_task, ])
+        future, = done
+        assert pending
 
     @asyncio.coroutine
     def periodic_task(self):
