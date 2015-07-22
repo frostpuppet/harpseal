@@ -7,6 +7,8 @@
 import asyncio
 import aiohttp
 
+from mongoengine import connect as mongo_connect
+
 from harpseal.conf import Config
 from harpseal.plugin import Plugin, PluginMixin
 from harpseal.web import WebServer
@@ -20,6 +22,12 @@ class Harpseal(PluginMixin):
         self.plugins = tuple()
         self.tasks = tuple()
         Plugin._app = self
+
+        conn_attrs = self.config['mongo']
+        for k, v in conn_attrs.items():
+            if k.startswith('_'):
+                del conn_attrs[k]
+        mongo_connect(**conn_attrs)
 
     @asyncio.coroutine
     def start(self, loop):
