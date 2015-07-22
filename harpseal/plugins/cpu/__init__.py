@@ -24,10 +24,18 @@ class CPUPlugin(Plugin):
         for i in range(cpus):
             self.fields['cpu'].append(('cpu{}'.format(i), float, ))
 
-        self.fields['cpu_times'] = ['user', 'nice', 'system', 'idle', 'iowait',
-                                    'irq', 'softirq', 'steal', 'guest', 'guest_nice']
-        self.fields['pids'] = ['count']
+        for i in psutil.cpu_times_percent()._fields:
+            self.fields['cpu_times'].append((i, float, ))
+        self.fields['pids'] = [('count', int, )]
 
     @asyncio.coroutine
     def provider(self):
-        pass
+        data = self.data_form()
+        cpu_percent = [i / 100.0 for i in psutil.cpu_percent(interval=1, percpu=True)]
+        for i, value in enumerate(cpu_percent):
+            data['cpu'].set('cpu{}'.format(i), value)
+        cpu_times = psutil.cpu_times_percent(interval=1)
+        for key in cpu_times._fields:
+            data['cpu_times'].set(key, getattr(cpu_times, key))
+        data['pids'].set('count', len(psutil.pids()))
+        return data
