@@ -56,7 +56,7 @@ class Plugin(object):
         data = yield from self.provider()
         if data is None:
             raise AssertionError("The data is not passed from the .provider() function.")
-        return data
+        return (self, data, )
 
     @asyncio.coroutine
     def call(self, command):
