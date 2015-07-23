@@ -48,6 +48,6 @@ class Harpseal(PluginMixin):
                 attrs = {}
                 for key in result[name].keys():
                     attrs[key] = result[name].get(key)
-                model = plugin.models[name](**attrs)
+                model = plugin.models[name]()
+                model.add(**attrs)
                 model.save()
-                print(model.id)
