@@ -38,19 +38,22 @@ class PeriodicTask(object):
 
 class StrictDict(object):
     def __init__(self, fields):
-        self.fields = fields
-        self.keys = [k for k, _ in self.fields]
-        self.types = {k: t for k, t in self.fields}
-        self.values = {k: None for k, _ in self.fields}
+        self._fields = fields
+        self._keys = [k for k, _ in self._fields]
+        self._types = {k: t for k, t in self._fields}
+        self._values = {k: None for k, _ in self._fields}
 
     def get(self, name):
-        if name not in self.keys:
+        if name not in self._keys:
             raise KeyError("The key '{}' does not exist in the dict.".format(name))
-        return self.values.get(name)
+        return self._values.get(name)
 
     def set(self, name, value):
-        if name not in self.keys:
+        if name not in self._keys:
             raise KeyError("The key '{}' does not exist in the dict.".format(name))
-        if not isinstance(value, self.types[name]):
+        if not isinstance(value, self._types[name]):
             raise TypeError("TypeError")
-        self.values[name] = value
+        self._values[name] = value
+
+    def keys(self):
+        return self._keys
