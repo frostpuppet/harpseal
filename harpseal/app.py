@@ -43,5 +43,11 @@ class Harpseal(PluginMixin):
     @asyncio.coroutine
     def periodic_task(self):
         while 1:
-            result = yield from self.queue.get()
-            print(result)
+            plugin, result = yield from self.queue.get()
+            for name in result.keys():
+                attrs = {}
+                for key in result[name].keys():
+                    attrs[key] = result[name].get(key)
+                model = plugin.models[name](**attrs)
+                model.save()
+                print(model.id)
