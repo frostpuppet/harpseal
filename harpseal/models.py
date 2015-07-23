@@ -23,5 +23,9 @@ def make_model(name, args):
         self.items = items
         self.created_at = datetime.now()
 
-    cls = type(name, (DynamicDocument, ), {'add': add})
+    meta = {
+        'indexes': ['-created_at']
+    }
+
+    cls = type(name, (DynamicDocument, ), {'add': add, 'meta': meta})
     return cls
