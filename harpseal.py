@@ -21,7 +21,7 @@ def main():
     retcode = 0
     loop = asyncio.get_event_loop()
     try:
-    loop.run_until_complete(app.start(loop))
+        loop.run_until_complete(app.start(loop))
     except KeyboardInterrupt:
         pass
     except Exception as exc:
