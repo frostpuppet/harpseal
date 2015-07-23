@@ -59,7 +59,7 @@ class Plugin(object):
         return data
 
     @asyncio.coroutine
-    def _call(self, command):
+    def call(self, command):
         """
         Execute a command on the event-loop and then return the result when finished.
         """
