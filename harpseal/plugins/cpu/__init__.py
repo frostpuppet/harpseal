@@ -31,10 +31,10 @@ class CPUPlugin(Plugin):
     @asyncio.coroutine
     def provider(self):
         data = self.data_form()
-        cpu_percent = [i / 100.0 for i in psutil.cpu_percent(interval=1, percpu=True)]
+        cpu_percent = [i / 100.0 for i in psutil.cpu_percent(percpu=True)]
         for i, value in enumerate(cpu_percent):
             data['cpu'].set('cpu{}'.format(i), value)
-        cpu_times = psutil.cpu_times_percent(interval=1)
+        cpu_times = psutil.cpu_times_percent()
         for key in cpu_times._fields:
             data['cpu_times'].set(key, getattr(cpu_times, key))
         data['pids'].set('count', len(psutil.pids()))
