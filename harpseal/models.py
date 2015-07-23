@@ -18,7 +18,7 @@ def make_model(name, args):
     def save(self, *args, **kwargs):
         if not self.created_at:
             self.created_at = datetime.now()
-        return super(BaseModel, self).save(*args, **kwargs)
+        return super(DynamicDocument, self).save(*args, **kwargs)
     cls = type(name, (DynamicDocument, ), {'save': save})
     setattr(cls, 'created_at', DateTimeField())
     for arg in args:
