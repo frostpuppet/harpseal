@@ -4,7 +4,6 @@
 
 """
 import asyncio
-import json
 
 from aiohttp import web
 
@@ -16,4 +15,9 @@ class Router(object):
     def __init__(self, app, plugins):
         self.parent = app  # WebServer
         self.handler = Handler(plugins=plugins)
-        app.router.add_route('GET', r'/plugins/{name}', self.handler.plugin_handler)
+        self.add_routes()
+
+    def add_routes(self):
+        self.parent.router.add_route(
+            'GET', r'/plugins/{name}', self.handler.plugin_handler)
+
