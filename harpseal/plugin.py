@@ -8,6 +8,7 @@
 import asyncio
 import inspect
 from collections import defaultdict
+from datetime import datetime
 from importlib import import_module
 
 from harpseal.utils.commands import execute
@@ -34,6 +35,8 @@ class Plugin(object):
         for k, v in self.fields.items():
             self.fields[k] = tuple(v)
         self.init_model()
+        self.last_executed_at = None
+        self.last_executed_result = None
 
     def init_model(self):
         for name, fields in self.fields.items():
@@ -53,7 +56,15 @@ class Plugin(object):
         """
         if not asyncio.iscoroutinefunction(self.provider):
             raise TypeError("You must wrap the function with '@asyncio.coroutine' decorator.")
-        data = yield from self.provider()
+        self.last_executed_at = datetime.now()
+        try:
+            data = yield from self.provider()
+        except:
+            data = None
+            self.last_executed_result = False
+        else:
+            self.last_executed_result = True
+
         if data is None:
             print("WARNING: The data is not passed from the .provider() function.")
         return (self, data, )
