@@ -1,20 +1,13 @@
 """
-    harpseal.web.routes
-    ~~~~~~~~~~~~~~~~~~~
+    harpseal.web.classes
+    ~~~~~~~~~~~~~~~~~~~~
 
 """
 import asyncio
-import json
 
 from aiohttp import web
 
-__all__ = ['Router', 'Handler']
-
-class Router(object):
-    def __init__(self, app):
-        self.handler = Handler()
-        app.router.add_route('GET', r'/plugins/{name}', self.handler.plugins)
-
+__all__ = ['Response']
 
 class Response(web.StreamResponse):
     def __init__(self, body=None, status=200, reason=None, headers=None):
@@ -46,14 +39,3 @@ class Response(web.StreamResponse):
         body = self._body
         if body is not None:
             self.write(body)
-        yield from super().write_eof()
-
-
-class Handler(object):
-    def __init__(self):
-        pass
-
-    @asyncio.coroutine
-    def plugins(self, req):
-        name = req.match_info.get('name')
-        return Response({'name': name})

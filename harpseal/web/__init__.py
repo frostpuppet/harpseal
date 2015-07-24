@@ -7,7 +7,10 @@ import asyncio
 
 from aiohttp import web
 
-from harpseal.web.routes import Router
+from harpseal.web.classes import Response
+from harpseal.web.router import Router
+
+__all__ = ['WebServer', 'Resposne']
 
 class WebServer(object):
     def __init__(self, parent):
@@ -29,4 +32,4 @@ class WebServer(object):
         self.handler = self.app.make_handler()
         self.server = self.parent.loop.create_server(self.handler, '0.0.0.0', 24680)
         yield from self.server
-        self.router = Router(self.app)
+        self.router = Router(self.app, plugins=self.parent.plugins)
