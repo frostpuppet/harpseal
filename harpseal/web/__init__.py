@@ -7,6 +7,8 @@ import asyncio
 
 from aiohttp import web
 
+from harpseal.web.routes import Router
+
 class WebServer(object):
     def __init__(self, parent):
         self.parent = parent
