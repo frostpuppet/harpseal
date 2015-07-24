@@ -55,7 +55,7 @@ class Plugin(object):
             raise TypeError("You must wrap the function with '@asyncio.coroutine' decorator.")
         data = yield from self.provider()
         if data is None:
-            raise AssertionError("The data is not passed from the .provider() function.")
+            print("WARNING: The data is not passed from the .provider() function.")
         return (self, data, )
 
     @asyncio.coroutine

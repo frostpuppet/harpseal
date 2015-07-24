@@ -28,9 +28,9 @@ class PeriodicTask(object):
 
     @asyncio.coroutine
     def run(self):
-        result = yield from self._func()
+        plugin, result = yield from self._func()
         if result is not None:
-            yield from self._app.queue.put(result)
+            yield from self._app.queue.put((plugin, result, ))
 
     def start(self):
         self._task = asyncio.Task(self._run())
