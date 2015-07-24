@@ -4,7 +4,7 @@
 
 """
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 EPOCH = datetime.utcfromtimestamp(0)
 
@@ -16,3 +16,7 @@ def unixtime(dt, multiply=True):
     if multiply:
         result = int(result * 1000.0)
     return result
+
+def ago(**kwargs):
+    dt = datetime.now() - timedelta(**kwargs)
+    return dt
