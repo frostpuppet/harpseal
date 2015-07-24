@@ -15,6 +15,7 @@ class WebServer(object):
         self.app = None
         self.handler = None
         self.server = None
+        self.router = None
 
     def __del__(self):
         yield from self.handler.finish_connections(1.0)
@@ -28,3 +29,4 @@ class WebServer(object):
         self.handler = self.app.make_handler()
         self.server = self.parent.loop.create_server(self.handler, '0.0.0.0', 24680)
         yield from self.server
+        self.router = Router(self.app)
