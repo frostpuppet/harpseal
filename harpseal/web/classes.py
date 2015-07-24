@@ -4,6 +4,7 @@
 
 """
 import asyncio
+import json
 
 from aiohttp import web
 
@@ -15,6 +16,8 @@ class Response(web.StreamResponse):
 
         if body is None:
             raise ValueError("the argument 'body' is positional argument.")
+        elif 'ok' not in body:
+            body['ok'] = True
         self.headers['Content-Type'] = self.content_type = 'application/json'
         self.body = body
 
