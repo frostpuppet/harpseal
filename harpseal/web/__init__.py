@@ -4,6 +4,7 @@ harpseal.web
 
 """
 import asyncio
+
 from aiohttp import web
 
 class WebServer(object):
