@@ -39,3 +39,4 @@ class Response(web.StreamResponse):
         body = self._body
         if body is not None:
             self.write(body)
+        yield from super().write_eof()

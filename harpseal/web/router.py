@@ -17,6 +17,3 @@ class Router(object):
         self.parent = app  # WebServer
         self.handler = Handler(plugins=plugins)
         app.router.add_route('GET', r'/plugins/{name}', self.handler.plugin_handler)
-
-        yield from super().write_eof()
-
