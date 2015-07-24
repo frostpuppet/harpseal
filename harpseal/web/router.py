@@ -1,5 +1,5 @@
 """
-    harpseal.web.routes
+    harpseal.web.router
     ~~~~~~~~~~~~~~~~~~~
 
 """
