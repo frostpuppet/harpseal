@@ -29,7 +29,7 @@ class Handler(object):
             name: {
                 'description': item.description,
                 'every': item.every,
-                'lastExecutedAt': dtutils.unixtime(item.last_executed_at),
+                'lastExecutedAt': dtutils.unixtime(item.last_executed_at) if item.last_executed_at else None,
                 'lastExecutedResult': item.last_executed_result,
             } for name, item in self.plugins.items()
         } if withdetails else self.plugins.keys()
@@ -76,5 +76,15 @@ class Handler(object):
             'data': data,
         }
         data.update(plugin)
+
+        return Response(data)
+
+    @asyncio.coroutine
+    def plugins_handler(self, req):
+        plugins = self.get_plugin_list(withdetails=True)
+        data = {'data': {}}
+        for name, details in plugins.items():
+            data['data'][name] = details
+            data['data'][name]['data'] = self.get_plugin_logs(name, gte=dtutils.ago(days=7))
 
         return Response(data)

@@ -21,5 +21,7 @@ class Router(object):
         self.parent.router.add_route(
             'GET', r'/plugins/list', self.handler.plugin_list_handler)
         self.parent.router.add_route(
+            'GET', r'/plugins/all', self.handler.plugins_handler)
+        self.parent.router.add_route(
             'GET', r'/plugins/{name}', self.handler.plugin_handler)
 
