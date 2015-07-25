@@ -24,6 +24,22 @@ class Handler(object):
     def __init__(self, plugins):
         self.plugins = {plugin.name: plugin for plugin in plugins}
 
+    def raise_error(self, reason=''):
+        error = {
+            'ok': False,
+            'reason': reason,
+        }
+        return Response(error)
+
+    def parse_comptarget(self, req):
+        gte, lte = req.GET.get('gte', None), req.GET.get('lte', None)
+        try:
+            gte = dtutils.parse(gte) if gte else dtutils.ago(days=7)
+            lte = dtutils.parse(lte) if lte else datetime.now()
+        except:
+            gte, lte = None, None
+        return (gte, lte, )
+
     def get_plugin_list(self, withdetails=False):
         data = {
             name: {
@@ -39,8 +55,6 @@ class Handler(object):
     def get_plugin_logs(self, name, gte, lte=None):
         if name not in self.plugins.keys():
             raise KeyError("Plugin does not exist.")
-        if lte is None:
-            lte = datetime.now()
 
         data = {}
         plugin = self.plugins[name]
@@ -68,9 +82,13 @@ class Handler(object):
     @asyncio.coroutine
     @plugin_required
     def plugin_handler(self, req):
+        gte, lte = self.parse_comptarget(req)
+        if gte is None or lte is None:
+            return self.raise_error('The given datetime cannot be parsed.')
         name = req.match_info.get('name')
+
         plugin = self.get_plugin_list(withdetails=True)[name]
-        data = self.get_plugin_logs(name, gte=dtutils.ago(days=7))
+        data = self.get_plugin_logs(name, gte=gte, lte=lte)
         data = {
             'name': name,
             'data': data,
@@ -81,10 +99,14 @@ class Handler(object):
 
     @asyncio.coroutine
     def plugins_handler(self, req):
+        gte, lte = self.parse_comptarget(req)
+        if gte is None or lte is None:
+            return self.raise_error('The given datetime cannot be parsed.')
+
         plugins = self.get_plugin_list(withdetails=True)
         data = {'data': {}}
         for name, details in plugins.items():
             data['data'][name] = details
-            data['data'][name]['data'] = self.get_plugin_logs(name, gte=dtutils.ago(days=7))
+            data['data'][name]['data'] = self.get_plugin_logs(name, gte=gte, lte=lte)
 
         return Response(data)
