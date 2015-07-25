@@ -29,7 +29,7 @@ def parse(text, fmt=r'%Y-%m-%d'):
     except:
         pass
     else:
-        if len(text) == 16:
+        if len(text) == 13:
             num /= 1000
         dt = datetime.fromtimestamp(num)
     if not dt:
