@@ -16,9 +16,9 @@ from harpseal.web import WebServer
 class Harpseal(PluginMixin):
     def __init__(self, conf='config.json'):
         self.loop = None
-        self.web = WebServer(self)
-        self.queue = asyncio.Queue()
         self.config = Config(path=conf)
+        self.queue = asyncio.Queue()
+        self.web = WebServer(self)
         self.plugins = tuple()
         self.tasks = tuple()
         Plugin._app = self
