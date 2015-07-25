@@ -15,7 +15,7 @@ class PeriodicTask(object):
 
     def __init__(self, plugin, app):
         self.plugin = plugin
-        self._interval = plugin.properties['every']
+        self._interval = plugin.properties['every'] * 60
         self._func = plugin.execute
         self._app = app
         self._task = None
