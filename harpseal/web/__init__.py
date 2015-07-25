@@ -46,8 +46,23 @@ class WebServer(object):
         return middleware
 
     @asyncio.coroutine
+    def jsonp_middleware(self, app, handler):
+        @asyncio.coroutine
+        def middleware(req):
+            callback = req.GET.get('callback', None)
+            data = yield from handler(req)
+            if callback:
+                body = data._body.decode('utf-8')
+                body = '{}({})'.format(callback, body)
+                data._body = body.encode('utf-8')
+                data.content_length = len(body)
+            return data
+        return middleware
+
+    @asyncio.coroutine
     def execute(self):
-        self.app = web.Application(middlewares=[self.whitelist_middleware])
+        self.app = web.Application(middlewares=[self.whitelist_middleware,
+                                                self.jsonp_middleware])
         self.handler = self.app.make_handler()
         self.server = self.parent.loop.create_server(self.handler,
                                                      self.parent.config['server']['host'],
