@@ -14,6 +14,14 @@ Installation
 
 (TBA)
 
+Built-in Plugins
+---------------
+
+* `cpu` - CPU watch plugin; it watches for each CPU usage, PID count and CPU times.
+* `mem` - Memory watch plugin; it watches for detailed memory usage data including swap memory.
+* `disk` - Disk watch plugin; it watches for each disk IOs and spaces.
+* `net` - Network watch plugin; it logs for network statistics.
+
 References
 ----------
 
