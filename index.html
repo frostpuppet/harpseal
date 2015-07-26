@@ -40,21 +40,67 @@
   <div class="section" id="harpseal">
 <h1>Harpseal<a class="headerlink" href="#harpseal" title="Permalink to this headline">¶</a></h1>
 <p><em>Harpseal</em> is a python app that collects system resources, usage and others by plugins which are extendable. <em>Harpseal</em> gives you easy accessible API to draw a graph or to analysis data by JSON format.</p>
-</div>
-<div class="section" id="features">
-<h1>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
-<li>Plugin</li>
-<li>Spoke-hub model</li>
-<li>HTTP API - JSON/JSONP (callback)</li>
+<li>GitHub: <a class="reference external" href="https://github.com/ssut/harpseal">https://github.com/ssut/harpseal</a></li>
+<li>Issue tracker: <a class="reference external" href="https://github.com/ssut/harpseal/issues">https://github.com/ssut/harpseal/issues</a></li>
+<li>Telegram: <a class="reference external" href="https://telegram.me/ssssut">&#64;ssssut</a></li>
+<li>Free software: <a class="reference external" href="http://opensource.org/licenses/Apache-2.0">Apache License</a></li>
+</ul>
+<div class="section" id="features">
+<h2>Features<a class="headerlink" href="#features" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Plugin — <em>Harpseal</em> is built upon a plugin system which allows support for new plugin to be easily created and added. It&#8217;s quite easy in fact as you can see in this documentation. even you don&#8217;t know anything about Harpseal structures.</li>
+<li>HTTP API - JSON/JSONP (callback)<ul>
+<li>It is possible to create a cluster monitoring system with <strong>super simple</strong> HTTP API.</li>
+<li>As I&#8217;ve written above, even you can get jsonp callback mechanism; the more easily, you can create it with <strong>Javascript</strong> only.</li>
+</ul>
+</li>
+<li>Light-weighted: with event-driven. <em>Harpseal</em> requires a lower memory footprint than many of system resource monitoring tools.</li>
+<li>Free. <em>Harpseal</em> is totally free to use even for commercial purposes.</li>
+<li>Super easy to install: it&#8217;s super easy to install and set up <em>Harpseal</em> server on your Debian-based linux distros because it&#8217;s already ready.</li>
+</ul>
+</div>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="dependencies">
+<h3>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h3>
+<p><cite>Harpseal</cite> requires the following dependencies:</p>
+<ul class="simple">
+<li>Python 3.3 and <a class="reference external" href="https://aiohttp.readthedocs.org/en/stable/glossary.html#term-asyncio">asyncio</a> or Python 3.4+</li>
+<li><code class="docutils literal"><span class="pre">aiohttp</span></code> library</li>
+<li><code class="docutils literal"><span class="pre">psutil</span></code> library for built-in plugins</li>
+<li><code class="docutils literal"><span class="pre">mongoengine</span></code> library for data storage</li>
+<li><code class="docutils literal"><span class="pre">IPy</span></code> library</li>
 </ul>
 </div>
 <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<h3>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h3>
+<p>(TBA)</p>
+</div>
+<div class="section" id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h3>
+<p>(TBA with installation)</p>
+</div>
+<div class="section" id="built-in-plugins">
+<h3>Built-in Plugins<a class="headerlink" href="#built-in-plugins" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><cite>cpu</cite> - CPU watch plugin; it watches for each CPU usage, PID count and CPU times.</li>
+<li><cite>mem</cite> - Memory watch plugin; it watches for detailed memory usage data including swap memory.</li>
+<li><cite>disk</cite> - Disk watch plugin; it watches for each disk IOs and spaces.</li>
+<li><cite>net</cite> - Network watch plugin; it logs for network statistics.</li>
+</ul>
+</div>
+</div>
+<div class="section" id="http-api">
+<h2>HTTP API<a class="headerlink" href="#http-api" title="Permalink to this headline">¶</a></h2>
+<p>(TBA)</p>
+</div>
+<div class="section" id="creating-plugins">
+<h2>Creating Plugins<a class="headerlink" href="#creating-plugins" title="Permalink to this headline">¶</a></h2>
 <p>(TBA)</p>
 </div>
 <div class="section" id="references">
-<h1>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h1>
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="harpseal/app.html">Harpseal Base</a><ul>
@@ -81,18 +127,19 @@
 </div>
 </div>
 <div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><a class="reference internal" href="search.html"><span>Search Page</span></a></li>
 </ul>
 </div>
 <div class="section" id="license">
-<h1>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h1>
-<p>All source codes are distributed under GNU GPL 2 license.</p>
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p>All source codes are distributed under the Apache License.</p>
 </div>
 <div class="section" id="contributors">
-<h1>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h1>
+<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
 <p>SuHun Han / <a class="reference external" href="https://github.com/ssut">&#64;ssut</a></p>
+</div>
 </div>
 
 

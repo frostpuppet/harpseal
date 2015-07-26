@@ -52,6 +52,7 @@
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Handler&#39;</span><span class="p">]</span>
 
 <span class="k">def</span> <span class="nf">plugin_required</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check if requested plugin is exists.&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">match_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
@@ -61,10 +62,13 @@
 
 
 <div class="viewcode-block" id="Handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler">[docs]</a><span class="k">class</span> <span class="nc">Handler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handler object.&quot;&quot;&quot;</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugins</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="p">{</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">plugin</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">}</span>
 
 <div class="viewcode-block" id="Handler.raise_error"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.raise_error">[docs]</a>    <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create an dict that represents error during the handling of the request.&quot;&quot;&quot;</span>
         <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s">&#39;ok&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
             <span class="s">&#39;reason&#39;</span><span class="p">:</span> <span class="n">reason</span><span class="p">,</span>
@@ -72,6 +76,7 @@
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Handler.parse_comptarget"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.parse_comptarget">[docs]</a>    <span class="k">def</span> <span class="nf">parse_comptarget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prase GET fragments that would includes optional arguments such as `gte` and `lte`.&quot;&quot;&quot;</span>
         <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;gte&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;lte&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">gte</span> <span class="o">=</span> <span class="n">dtutils</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">gte</span><span class="p">)</span> <span class="k">if</span> <span class="n">gte</span> <span class="k">else</span> <span class="n">dtutils</span><span class="o">.</span><span class="n">ago</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
@@ -81,6 +86,10 @@
         <span class="k">return</span> <span class="p">(</span><span class="n">gte</span><span class="p">,</span> <span class="n">lte</span><span class="p">,</span> <span class="p">)</span>
 </div>
 <div class="viewcode-block" id="Handler.get_plugin_list"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.get_plugin_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_plugin_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">withdetails</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get plugin list.</span>
+
+<span class="sd">        :param bool withdetails: True if you want to get plugin list with details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">name</span><span class="p">:</span> <span class="p">{</span>
                 <span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
@@ -93,6 +102,12 @@
         <span class="k">return</span> <span class="n">data</span>
 </div>
 <div class="viewcode-block" id="Handler.get_plugin_logs"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.get_plugin_logs">[docs]</a>    <span class="k">def</span> <span class="nf">get_plugin_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get plugin logs.</span>
+
+<span class="sd">        :param str name: Plugin name</span>
+<span class="sd">        :param gte: Greater than or equal to (created time)</span>
+<span class="sd">        :param lte: Less than or equal to (created time)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;Plugin does not exist.&quot;</span><span class="p">)</span>
 
@@ -117,11 +132,13 @@
 </div>
     <span class="nd">@asyncio.coroutine</span>
 <div class="viewcode-block" id="Handler.plugin_list_handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.plugin_list_handler">[docs]</a>    <span class="k">def</span> <span class="nf">plugin_list_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return plugin list.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_list</span><span class="p">(</span><span class="n">withdetails</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
 </div>
     <span class="nd">@asyncio.coroutine</span>
     <span class="nd">@plugin_required</span>
 <div class="viewcode-block" id="Handler.plugin_handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.plugin_handler">[docs]</a>    <span class="k">def</span> <span class="nf">plugin_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return specified plugin logs.&quot;&quot;&quot;</span>
         <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_comptarget</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gte</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">lte</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="s">&#39;The given datetime cannot be parsed.&#39;</span><span class="p">)</span>
@@ -139,6 +156,7 @@
 </div>
     <span class="nd">@asyncio.coroutine</span>
 <div class="viewcode-block" id="Handler.plugins_handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.plugins_handler">[docs]</a>    <span class="k">def</span> <span class="nf">plugins_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return all plugin logs.&quot;&quot;&quot;</span>
         <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_comptarget</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">gte</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">lte</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="s">&#39;The given datetime cannot be parsed.&#39;</span><span class="p">)</span>

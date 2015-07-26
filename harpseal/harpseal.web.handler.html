@@ -44,20 +44,45 @@
 <dt id="harpseal.web.handler.Handler">
 <em class="property">class </em><code class="descclassname">harpseal.web.handler.</code><code class="descname">Handler</code><span class="sig-paren">(</span><em>plugins</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Handler object.</p>
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.get_plugin_list">
 <code class="descname">get_plugin_list</code><span class="sig-paren">(</span><em>withdetails=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler.get_plugin_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler.get_plugin_list" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get plugin list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>withdetails</strong> (<em>bool</em>) &#8211; True if you want to get plugin list with details.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.get_plugin_logs">
 <code class="descname">get_plugin_logs</code><span class="sig-paren">(</span><em>name</em>, <em>gte</em>, <em>lte=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler.get_plugin_logs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler.get_plugin_logs" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Get plugin logs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; Plugin name</li>
+<li><strong>gte</strong> &#8211; Greater than or equal to (created time)</li>
+<li><strong>lte</strong> &#8211; Less than or equal to (created time)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.parse_comptarget">
 <code class="descname">parse_comptarget</code><span class="sig-paren">(</span><em>req</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler.parse_comptarget"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler.parse_comptarget" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Prase GET fragments that would includes optional arguments such as <cite>gte</cite> and <cite>lte</cite>.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.plugin_handler">
@@ -67,17 +92,20 @@
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.plugin_list_handler">
 <code class="descname">plugin_list_handler</code><span class="sig-paren">(</span><em>req</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler.plugin_list_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler.plugin_list_handler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return plugin list.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.plugins_handler">
 <code class="descname">plugins_handler</code><span class="sig-paren">(</span><em>req</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler.plugins_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler.plugins_handler" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Return all plugin logs.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="harpseal.web.handler.Handler.raise_error">
 <code class="descname">raise_error</code><span class="sig-paren">(</span><em>reason=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/web/handler.html#Handler.raise_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.web.handler.Handler.raise_error" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Create an dict that represents error during the handling of the request.</p>
+</dd></dl>
 
 </dd></dl>
 
