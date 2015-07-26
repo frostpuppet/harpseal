@@ -1,8 +1,6 @@
 """
-    harpseal.models
-    ~~~~~~~~~~~~~~~
-
-    Mongo models
+    Models
+    ~~~~~~
 """
 
 from datetime import datetime
@@ -15,9 +13,7 @@ class Items(DynamicEmbeddedDocument):
     pass
 
 def make_model(name, args):
-    """
-    Create a new model with given name and arguments
-    """
+    """Create a new model with name and arguments given."""
     def add(self, **kwargs):
         items = Items(**kwargs)
         self.items = items

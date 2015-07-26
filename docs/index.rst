@@ -14,8 +14,8 @@ Installation
 
 (TBA)
 
-Rerferences
------------
+References
+----------
 
 .. toctree::
     :maxdepth: 2
@@ -23,10 +23,8 @@ Rerferences
     usage
 
     harpseal/app
-    harpseal/harpseal.conf
-    harpseal/harpseal.models
-
-    harpseal/harpseal.plugin
+    harpseal/utils
+    harpseal/web
 
 
 Indices and tables

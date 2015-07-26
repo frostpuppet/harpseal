@@ -1,10 +1,15 @@
 """
-config parser
+    Config parser
+    ~~~~~~~~~~~~~
+
+    Harpseal config parser based on JSON
 """
 import os
 import json
 
 class Config(object):
+    """Config parser, working like `dict`."""
+
     def __init__(self, path):
         if not os.path.exists(path):
             raise IOError("The path of the config file does not exist.")
