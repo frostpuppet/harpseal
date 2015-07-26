@@ -98,8 +98,8 @@
 <h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li>Compare with <strong>creation time</strong> that expresses when the data has been added.<ul>
-<li><code class="docutils literal"><span class="pre">gte</span></code>: greater than equal to</li>
-<li><code class="docutils literal"><span class="pre">lte</span></code>: less than equal to</li>
+<li><code class="docutils literal"><span class="pre">gte</span></code>: greater than or equal to</li>
+<li><code class="docutils literal"><span class="pre">lte</span></code>: less than or equal to</li>
 <li>format: <cite>YYYY-mm-dd</cite>, <cite>YYYY-mm-dd HH</cite>, <cite>YYYY-mm-dd HH:MM</cite>, <cite>YYYY-mm-dd HH:MM:SS</cite> or <cite>unix timestamp</cite> (10-digit or 13-digit)</li>
 </ul>
 </li>
@@ -107,9 +107,9 @@
 </div>
 <div class="section" id="common-response-format">
 <h3>Common Response Format<a class="headerlink" href="#common-response-format" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-json"><div class="highlight"><pre>{
-    &quot;ok&quot;: True
-}
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;ok&quot;</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 <p>The <strong>ok</strong> value means that whether the request was successful or failure, this value will vary for each request.</p>
