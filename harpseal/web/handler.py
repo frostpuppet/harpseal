@@ -12,6 +12,7 @@ from harpseal.web import Response
 __all__ = ['Handler']
 
 def plugin_required(func):
+    """Check if requested plugin is exists."""
     def decorator(self, req):
         name = req.match_info.get('name')
         if name not in self.plugins.keys():
@@ -21,10 +22,13 @@ def plugin_required(func):
 
 
 class Handler(object):
+    """Handler object."""
+
     def __init__(self, plugins):
         self.plugins = {plugin.name: plugin for plugin in plugins}
 
     def raise_error(self, reason=''):
+        """Create an dict that represents error during the handling of the request."""
         error = {
             'ok': False,
             'reason': reason,
@@ -32,6 +36,7 @@ class Handler(object):
         return Response(error)
 
     def parse_comptarget(self, req):
+        """Prase GET fragments that would includes optional arguments such as `gte` and `lte`."""
         gte, lte = req.GET.get('gte', None), req.GET.get('lte', None)
         try:
             gte = dtutils.parse(gte) if gte else dtutils.ago(days=7)
@@ -41,6 +46,10 @@ class Handler(object):
         return (gte, lte, )
 
     def get_plugin_list(self, withdetails=False):
+        """Get plugin list.
+
+        :param bool withdetails: True if you want to get plugin list with details.
+        """
         data = {
             name: {
                 'description': item.description,
@@ -53,6 +62,12 @@ class Handler(object):
         return data
 
     def get_plugin_logs(self, name, gte, lte=None):
+        """Get plugin logs.
+
+        :param str name: Plugin name
+        :param gte: Greater than or equal to (created time)
+        :param lte: Less than or equal to (created time)
+        """
         if name not in self.plugins.keys():
             raise KeyError("Plugin does not exist.")
 
@@ -77,11 +92,13 @@ class Handler(object):
 
     @asyncio.coroutine
     def plugin_list_handler(self, req):
+        """Return plugin list."""
         return Response(self.get_plugin_list(withdetails=True))
 
     @asyncio.coroutine
     @plugin_required
     def plugin_handler(self, req):
+        """Return specified plugin logs."""
         gte, lte = self.parse_comptarget(req)
         if gte is None or lte is None:
             return self.raise_error('The given datetime cannot be parsed.')
@@ -99,6 +116,7 @@ class Handler(object):
 
     @asyncio.coroutine
     def plugins_handler(self, req):
+        """Return all plugin logs."""
         gte, lte = self.parse_comptarget(req)
         if gte is None or lte is None:
             return self.raise_error('The given datetime cannot be parsed.')
