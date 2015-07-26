@@ -71,9 +71,9 @@ Parameters
 
 * Compare with **creation time** that expresses when the data has been added.
 
-  * ``gte``: greater than equal to
+  * ``gte``: greater than or equal to
 
-  * ``lte``: less than equal to
+  * ``lte``: less than or equal to
 
   * format: `YYYY-mm-dd`, `YYYY-mm-dd HH`, `YYYY-mm-dd HH:MM`, `YYYY-mm-dd HH:MM:SS` or `unix timestamp` (10-digit or 13-digit)
 
@@ -83,7 +83,7 @@ Common Response Format
 .. code-block:: json
 
    {
-       "ok": True
+       "ok": true
    }
 
 The **ok** value means that whether the request was successful or failure, this value will vary for each request.
