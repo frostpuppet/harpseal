@@ -1,7 +1,8 @@
 """
-harpseal.web
-~~~~~~~~~~~~
+    WebServer
+    ~~~~~~~~~
 
+    The web server is based on `aiohttp <https://github.com/KeepSafe/aiohttp/>`_ package.
 """
 import asyncio
 
@@ -14,12 +15,20 @@ from harpseal.web.router import Router
 __all__ = ['WebServer', 'Resposne']
 
 class WebServer(object):
+    """Harpseal WebServer Class
+
+    :param parent: Harpseal instance
+    """
+
     def __init__(self, parent):
+        #: (:class:`harpseal.app.Harpseal`) Harpseal instance
         self.parent = parent
         self.app = None
         self.handler = None
         self.server = None
+        #: (:class:`harpseal.web.router.Router`) Web router
         self.router = None
+        #: (:class:`list`) IP whitelist
         self.whitelist = [IP(allow) for allow in parent.config['server']['allows']]
 
     def __del__(self):
@@ -30,6 +39,7 @@ class WebServer(object):
 
     @asyncio.coroutine
     def whitelist_middleware(self, app, handler):
+        """Deny if user's ipaddress is not in the whitelist."""
         @asyncio.coroutine
         def middleware(req):
             peername = req.transport.get_extra_info('peername')
@@ -47,6 +57,7 @@ class WebServer(object):
 
     @asyncio.coroutine
     def jsonp_middleware(self, app, handler):
+        """Retrurn data as JSONP callback format when `callback` parameter given."""
         @asyncio.coroutine
         def middleware(req):
             callback = req.GET.get('callback', None)
@@ -61,6 +72,7 @@ class WebServer(object):
 
     @asyncio.coroutine
     def authenticate_middleware(self, app, handler):
+        """Deny if key is set and does not match with `key` parameter given."""
         key = self.parent.config['server'].get('key', '')
         @asyncio.coroutine
         def middleware(req):
@@ -77,6 +89,7 @@ class WebServer(object):
 
     @asyncio.coroutine
     def execute(self):
+        """Start a web server."""
         self.app = web.Application(middlewares=[self.whitelist_middleware,
                                                 self.authenticate_middleware,
                                                 self.jsonp_middleware])
