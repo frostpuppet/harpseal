@@ -1,6 +1,6 @@
 """
-harpseal.utils.commands
-~~~~~~~~~~~~~~~~~~~~~~~
+    Command Tools
+    ~~~~~~~~~~~~~
 
 """
 import asyncio
@@ -21,9 +21,7 @@ class DateProtocol(asyncio.SubprocessProtocol):
 
 @asyncio.coroutine
 def execute(app, command):
-    """
-    Execute a command which is given by a subclass of Plugin.
-    """
+    """Execute a command."""
     command = shlex.split(command)
     exit_future = asyncio.Future()
 

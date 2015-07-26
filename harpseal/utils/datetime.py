@@ -1,6 +1,6 @@
 """
-    harpseal.utils.datetime
-    ~~~~~~~~~~~~~~~~~~~~~~~
+    DateTime Tools
+    ~~~~~~~~~~~~~~
 
 """
 import time
@@ -9,6 +9,10 @@ from datetime import datetime, timedelta
 EPOCH = datetime.utcfromtimestamp(0)
 
 def unixtime(dt, multiply=True):
+    """Return the unix timestamp of the datetime given.
+
+    :param bool multiply: whether return as 13-digit timestamp or 10-digit timestamp
+    """
     if not isinstance(dt, datetime):
         raise TypeError("The first argument is must be datetime.")
     delta = dt - EPOCH
@@ -18,10 +22,14 @@ def unixtime(dt, multiply=True):
     return result
 
 def ago(**kwargs):
+    """Return the datetime that points specific times ago."""
     dt = datetime.now() - timedelta(**kwargs)
     return dt
 
 def parse(text, fmt=r'%Y-%m-%d'):
+    """Return the datetime of either text or integer given.
+    This function automatically recognizes the format of text or integer.
+    """
     num = None
     dt = None
     try:
