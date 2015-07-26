@@ -38,40 +38,46 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="harpseal-utils-helpers">
-<h1>Harpseal Utils (Helpers)<a class="headerlink" href="#harpseal-utils-helpers" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-harpseal.utils.commands">
-<span id="command-tools"></span><h2>Command Tools<a class="headerlink" href="#module-harpseal.utils.commands" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="harpseal-utils-commands">
-<h3>harpseal.utils.commands<a class="headerlink" href="#harpseal-utils-commands" title="Permalink to this headline">¶</a></h3>
+  <div class="section" id="module-harpseal.utils.commands">
+<span id="harpseal-utils-helpers"></span><h1>Harpseal Utils (Helpers)<a class="headerlink" href="#module-harpseal.utils.commands" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="command-tools">
+<h2>Command Tools<a class="headerlink" href="#command-tools" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="harpseal.utils.commands.execute">
-<code class="descclassname">harpseal.utils.commands.</code><code class="descname">execute</code><span class="sig-paren">(</span><em>app</em>, <em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.utils.commands.execute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Execute a command which is given by a subclass of Plugin.</p>
+<code class="descclassname">harpseal.utils.commands.</code><code class="descname">execute</code><span class="sig-paren">(</span><em>app</em>, <em>command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/utils/commands.html#execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.utils.commands.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a command.</p>
 </dd></dl>
 
 </div>
-</div>
-<div class="section" id="module-harpseal.utils.datetime">
-<span id="datetime-tools"></span><h2>DateTime Tools<a class="headerlink" href="#module-harpseal.utils.datetime" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="harpseal-utils-datetime">
-<h3>harpseal.utils.datetime<a class="headerlink" href="#harpseal-utils-datetime" title="Permalink to this headline">¶</a></h3>
+<span class="target" id="module-harpseal.utils.datetime"></span><div class="section" id="datetime-tools">
+<h2>DateTime Tools<a class="headerlink" href="#datetime-tools" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="harpseal.utils.datetime.ago">
-<code class="descclassname">harpseal.utils.datetime.</code><code class="descname">ago</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.utils.datetime.ago" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">harpseal.utils.datetime.</code><code class="descname">ago</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/utils/datetime.html#ago"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.utils.datetime.ago" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the datetime that points specific times ago.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="harpseal.utils.datetime.parse">
-<code class="descclassname">harpseal.utils.datetime.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>text</em>, <em>fmt='%Y-%m-%d'</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.utils.datetime.parse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">harpseal.utils.datetime.</code><code class="descname">parse</code><span class="sig-paren">(</span><em>text</em>, <em>fmt='%Y-%m-%d'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/utils/datetime.html#parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.utils.datetime.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the datetime of either text or integer given.
+This function automatically recognizes the format of text or integer.</p>
+</dd></dl>
 
 <dl class="function">
 <dt id="harpseal.utils.datetime.unixtime">
-<code class="descclassname">harpseal.utils.datetime.</code><code class="descname">unixtime</code><span class="sig-paren">(</span><em>dt</em>, <em>multiply=True</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.utils.datetime.unixtime" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="descclassname">harpseal.utils.datetime.</code><code class="descname">unixtime</code><span class="sig-paren">(</span><em>dt</em>, <em>multiply=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/utils/datetime.html#unixtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.utils.datetime.unixtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the unix timestamp of the datetime given.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>multiply</strong> (<em>bool</em>) &#8211; whether return as 13-digit timestamp or 10-digit timestamp</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
-</div>
 </div>
 </div>
 
@@ -81,20 +87,48 @@
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Harpseal Utils (Helpers)</a><ul>
-<li><a class="reference internal" href="#module-harpseal.utils.commands">Command Tools</a><ul>
-<li><a class="reference internal" href="#harpseal-utils-commands">harpseal.utils.commands</a></li>
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/harpseal-150x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">A next generation linux monitoring tool based on plugins.</p>
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ssut&repo=harpseal&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/ssut/harpseal">
+    <img
+        alt="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+        src="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+    >
+</a>
+</p>
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="app.html">Harpseal Base</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Harpseal Utils (Helpers)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#command-tools">Command Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datetime-tools">DateTime Tools</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#module-harpseal.utils.datetime">DateTime Tools</a><ul>
-<li><a class="reference internal" href="#harpseal-utils-datetime">harpseal.utils.datetime</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Harpseal API Server</a></li>
 </ul>
-</li>
-</ul>
-</li>
-</ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -104,13 +138,6 @@
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/harpseal/utils.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -140,6 +167,10 @@
           rel="nofollow">Page source</a>
     </div>
 
+    
+    <a href="https://github.com/ssut/harpseal" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
     
 
     

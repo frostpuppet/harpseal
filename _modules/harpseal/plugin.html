@@ -1,0 +1,303 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>harpseal.plugin &mdash; Harpseal 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Harpseal 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for harpseal.plugin</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Harpseal Plugin</span>
+<span class="sd">    ~~~~~~~~~~~~~~~</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+
+<span class="kn">from</span> <span class="nn">harpseal.utils.commands</span> <span class="kn">import</span> <span class="n">execute</span>
+<span class="kn">from</span> <span class="nn">harpseal.classes</span> <span class="kn">import</span> <span class="n">PeriodicTask</span><span class="p">,</span> <span class="n">StrictDict</span>
+<span class="kn">from</span> <span class="nn">harpseal.models</span> <span class="kn">import</span> <span class="n">make_model</span>
+
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base plugin model</span>
+
+<span class="sd">    Usage:</span>
+
+<span class="sd">    .. code-block:: python</span>
+<span class="sd">    </span>
+<span class="sd">       import asyncio</span>
+<span class="sd">       from harpseal.plugin import Plugin</span>
+
+<span class="sd">       class YourPlugin(Plugin):</span>
+<span class="sd">           name = &#39;(required) your-plugin-name&#39;</span>
+<span class="sd">           description = &#39;(required) plugin description here&#39;</span>
+<span class="sd">           priority = 0  # not yet implemented</span>
+<span class="sd">           every = 1  # every 1 minute</span>
+
+<span class="sd">           def init(self):</span>
+<span class="sd">               # graph type definitions</span>
+<span class="sd">               self.field_types[&#39;a&#39;] = &#39;line&#39;</span>
+<span class="sd">               self.field_types[&#39;b&#39;] = &#39;stack&#39;</span>
+<span class="sd">               self.field_types[&#39;c&#39;] = &#39;full-stack&#39;</span>
+<span class="sd">               # field type definitions (`int` or `float`)</span>
+<span class="sd">               self.fields[&#39;a&#39;] = [(&#39;normal&#39;, int, ), (&#39;abnormal&#39;, int, ), ]</span>
+<span class="sd">               self.fields[&#39;b&#39;] = [(&#39;normal&#39;, float, ), (&#39;abnormal&#39;, float, ), ]</span>
+<span class="sd">               self.fields[&#39;c&#39;] = [(&#39;normal&#39;, float, ), (&#39;abnormal&#39;, float, ), ]</span>
+
+<span class="sd">           @asyncio.coroutine</span>
+<span class="sd">           def provider(self):  # data provider</span>
+<span class="sd">               data = self.data_form()</span>
+<span class="sd">               data[&#39;a&#39;].set(&#39;normal&#39;, 100)</span>
+<span class="sd">               data[&#39;a&#39;].set(&#39;abnormal&#39;, 150)</span>
+<span class="sd">               # ...</span>
+<span class="sd">               return data</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c">#: Plugin name</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="c">#: Plugin description</span>
+    <span class="n">description</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+    <span class="c">#: Execution priority</span>
+    <span class="n">priority</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="c">#: Plugin execution cycle (minutes)</span>
+    <span class="n">every</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">_app</span> <span class="o">=</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c">#: (:class:`dict`) Model definitions to be stored after executed `init` method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">models</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c">#: (:class:`collections.defaultdict`) Model field definitions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+        <span class="c">#: (:class:`collections.defaultdict`) Model field type definitions (line, stack, full-stack, bar)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">field_types</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="s">&#39;line&#39;</span><span class="p">)</span>  <span class="c"># line, stack, full-stack, bar</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;init&#39;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">init</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_model</span><span class="p">()</span>
+
+        <span class="c">#: (:class:`datetime.datetime`) Last executed time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_executed_at</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c">#: (:class:`bool`) Last executed result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_executed_result</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="Plugin.init_model"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">modelname</span> <span class="o">=</span> <span class="s">&#39;{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span> <span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">(</span><span class="n">modelname</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Plugin.data_form"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.data_form">[docs]</a>    <span class="k">def</span> <span class="nf">data_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">form</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">form</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">StrictDict</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">form</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Plugin.execute"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute plugin&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;You must wrap the function with &#39;@asyncio.coroutine&#39; decorator.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_executed_at</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_executed_result</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">last_executed_result</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;WARNING: The data is not passed from the .provider() function.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="p">)</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Plugin.call"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute a command on the event-loop and then return the result when finished.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Plugin</span><span class="o">.</span><span class="n">_app</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;The property ._app is not assigned.&quot;</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">execute</span><span class="p">(</span><span class="n">Plugin</span><span class="o">.</span><span class="n">_app</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">result</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Plugin.provider"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.provider">[docs]</a>    <span class="k">def</span> <span class="nf">provider</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Plugin provider that returns a plugin&#39;s result, this method must be overridden.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;.provider() must be overridden.&quot;</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return the instance properties as a dict.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s">&#39;&#39;</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;You must set the variables for both .name and .description.&quot;</span><span class="p">)</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="s">&#39;priority&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">priority</span><span class="p">,</span>
+            <span class="s">&#39;every&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">every</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">properties</span>
+</div>
+<span class="k">class</span> <span class="nc">_PluginMixin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">plugin_mixin_assert</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if the class was inherited and the inherited class has a tuple attribute that named .plugins.&quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span> <span class="o">!=</span> <span class="s">&#39;Harpseal&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;This mixin class must be inherited from &#39;Harpseal&#39; class.&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&#39;plugins&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;The .plugins attribute must be a tuple.&quot;</span><span class="p">)</span>
+            <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">decorator</span>
+
+<div class="viewcode-block" id="PluginMixin"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.PluginMixin">[docs]</a><span class="k">class</span> <span class="nc">PluginMixin</span><span class="p">(</span><span class="n">_PluginMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Mixin class for Plugin management.&quot;&quot;&quot;</span>
+
+    <span class="nd">@_PluginMixin.plugin_mixin_assert</span>
+<div class="viewcode-block" id="PluginMixin.register_plugins"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.PluginMixin.register_plugins">[docs]</a>    <span class="k">def</span> <span class="nf">register_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Register plugins.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;plugins&#39;</span><span class="p">]:</span>
+            <span class="n">modname</span> <span class="o">=</span> <span class="s">&#39;harpseal.plugins.{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">plugin</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">plugin</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">modname</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">RuntimeWarning</span><span class="p">(</span><span class="s">&quot;Cannot load {} plugin due to import error.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">modname</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_</span><span class="p">,</span> <span class="n">cls</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="n">plugin</span><span class="p">,</span>
+                    <span class="k">lambda</span> <span class="n">member</span><span class="p">:</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">member</span><span class="p">)</span> <span class="ow">and</span> \
+                           <span class="n">member</span><span class="o">.</span><span class="n">__module__</span> <span class="o">==</span> <span class="n">modname</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">instance</span> <span class="o">=</span> <span class="n">cls</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">+=</span> <span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="p">)</span>
+</div>
+    <span class="nd">@_PluginMixin.plugin_mixin_assert</span>
+<div class="viewcode-block" id="PluginMixin.run_plugins"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.PluginMixin.run_plugins">[docs]</a>    <span class="k">def</span> <span class="nf">run_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start loaded plugins.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">:</span>
+            <span class="n">task</span> <span class="o">=</span> <span class="n">PeriodicTask</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin</span><span class="p">,</span> <span class="n">app</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">task</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">+=</span> <span class="p">(</span><span class="n">task</span><span class="p">,</span> <span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/harpseal-150x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">A next generation linux monitoring tool based on plugins.</p>
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ssut&repo=harpseal&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/ssut/harpseal">
+    <img
+        alt="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+        src="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+    >
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/app.html">Harpseal Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/utils.html">Harpseal Utils (Helpers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/web.html">Harpseal API Server</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, SuHun Han (ssut).
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/ssut/harpseal" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>harpseal.web &mdash; Harpseal 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Harpseal 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for harpseal.web</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    WebServer</span>
+<span class="sd">    ~~~~~~~~~</span>
+
+<span class="sd">    The web server is based on `aiohttp &lt;https://github.com/KeepSafe/aiohttp/&gt;`_ package.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+
+<span class="kn">from</span> <span class="nn">aiohttp</span> <span class="kn">import</span> <span class="n">web</span>
+<span class="kn">from</span> <span class="nn">IPy</span> <span class="kn">import</span> <span class="n">IP</span>
+
+<span class="kn">from</span> <span class="nn">harpseal.web.classes</span> <span class="kn">import</span> <span class="n">Response</span>
+<span class="kn">from</span> <span class="nn">harpseal.web.router</span> <span class="kn">import</span> <span class="n">Router</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;WebServer&#39;</span><span class="p">,</span> <span class="s">&#39;Resposne&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="WebServer"><a class="viewcode-back" href="../../harpseal/web.html#harpseal.web.WebServer">[docs]</a><span class="k">class</span> <span class="nc">WebServer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Harpseal WebServer Class</span>
+
+<span class="sd">    :param parent: Harpseal instance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+        <span class="c">#: (:class:`harpseal.app.Harpseal`) Harpseal instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c">#: (:class:`harpseal.web.router.Router`) Web router</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">router</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c">#: (:class:`list`) IP whitelist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span> <span class="o">=</span> <span class="p">[</span><span class="n">IP</span><span class="p">(</span><span class="n">allow</span><span class="p">)</span> <span class="k">for</span> <span class="n">allow</span> <span class="ow">in</span> <span class="n">parent</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;server&#39;</span><span class="p">][</span><span class="s">&#39;allows&#39;</span><span class="p">]]</span>
+
+    <span class="k">def</span> <span class="nf">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">finish_connections</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">wait_closed</span><span class="p">()</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">finish</span><span class="p">()</span>
+
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="WebServer.whitelist_middleware"><a class="viewcode-back" href="../../harpseal/web.html#harpseal.web.WebServer.whitelist_middleware">[docs]</a>    <span class="k">def</span> <span class="nf">whitelist_middleware</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deny if user&#39;s ipaddress is not in the whitelist.&quot;&quot;&quot;</span>
+        <span class="nd">@asyncio.coroutine</span>
+        <span class="k">def</span> <span class="nf">middleware</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+            <span class="n">peername</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">transport</span><span class="o">.</span><span class="n">get_extra_info</span><span class="p">(</span><span class="s">&#39;peername&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">peername</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">host</span><span class="p">,</span> <span class="n">port</span> <span class="o">=</span> <span class="n">peername</span>
+                <span class="n">isinwhites</span> <span class="o">=</span> <span class="nb">any</span><span class="p">([</span><span class="n">host</span> <span class="ow">in</span> <span class="n">white</span> <span class="k">for</span> <span class="n">white</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">whitelist</span><span class="p">])</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">isinwhites</span><span class="p">:</span>
+                    <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s">&#39;ok&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                        <span class="s">&#39;reason&#39;</span><span class="p">:</span> <span class="s">&#39;Your ipaddress is not in the whitelist of allowed IPs.&#39;</span><span class="p">,</span>
+                    <span class="p">}</span>
+                    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="k">yield from</span> <span class="n">handler</span><span class="p">(</span><span class="n">req</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">middleware</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="WebServer.jsonp_middleware"><a class="viewcode-back" href="../../harpseal/web.html#harpseal.web.WebServer.jsonp_middleware">[docs]</a>    <span class="k">def</span> <span class="nf">jsonp_middleware</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Retrurn data as JSONP callback format when `callback` parameter given.&quot;&quot;&quot;</span>
+        <span class="nd">@asyncio.coroutine</span>
+        <span class="k">def</span> <span class="nf">middleware</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+            <span class="n">callback</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;callback&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">handler</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">callback</span><span class="p">:</span>
+                <span class="n">body</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">_body</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">body</span> <span class="o">=</span> <span class="s">&#39;{}({})&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">body</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">_body</span> <span class="o">=</span> <span class="n">body</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+                <span class="n">data</span><span class="o">.</span><span class="n">content_length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">body</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">middleware</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="WebServer.authenticate_middleware"><a class="viewcode-back" href="../../harpseal/web.html#harpseal.web.WebServer.authenticate_middleware">[docs]</a>    <span class="k">def</span> <span class="nf">authenticate_middleware</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deny if key is set and does not match with `key` parameter given.&quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;server&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+        <span class="nd">@asyncio.coroutine</span>
+        <span class="k">def</span> <span class="nf">middleware</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">handler</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span><span class="p">:</span>
+                <span class="n">given</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">given</span><span class="p">:</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">Response</span><span class="p">({</span>
+                        <span class="s">&#39;ok&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+                        <span class="s">&#39;reason&#39;</span><span class="p">:</span> <span class="s">&#39;Invalid authentication credential.&#39;</span><span class="p">,</span>
+                    <span class="p">})</span>
+            <span class="k">return</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">middleware</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="WebServer.execute"><a class="viewcode-back" href="../../harpseal/web.html#harpseal.web.WebServer.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start a web server.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">web</span><span class="o">.</span><span class="n">Application</span><span class="p">(</span><span class="n">middlewares</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">whitelist_middleware</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">authenticate_middleware</span><span class="p">,</span>
+                                                <span class="bp">self</span><span class="o">.</span><span class="n">jsonp_middleware</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handler</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="o">.</span><span class="n">make_handler</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">create_server</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="p">,</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;server&#39;</span><span class="p">][</span><span class="s">&#39;host&#39;</span><span class="p">],</span>
+                                                     <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;server&#39;</span><span class="p">][</span><span class="s">&#39;port&#39;</span><span class="p">])</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">router</span> <span class="o">=</span> <span class="n">Router</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">,</span> <span class="n">plugins</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">plugins</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/harpseal-150x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">A next generation linux monitoring tool based on plugins.</p>
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ssut&repo=harpseal&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/ssut/harpseal">
+    <img
+        alt="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+        src="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+    >
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/app.html">Harpseal Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/utils.html">Harpseal Utils (Helpers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/web.html">Harpseal API Server</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, SuHun Han (ssut).
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/ssut/harpseal" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

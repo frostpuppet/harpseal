@@ -1,0 +1,243 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>harpseal.web.handler &mdash; Harpseal 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Harpseal 1.0.0 documentation" href="../../../index.html" />
+    <link rel="up" title="harpseal.web" href="../web.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for harpseal.web.handler</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Web Handler</span>
+<span class="sd">    ~~~~~~~~~~~</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="kn">from</span> <span class="nn">harpseal.utils</span> <span class="kn">import</span> <span class="n">datetime</span> <span class="k">as</span> <span class="n">dtutils</span>
+<span class="kn">from</span> <span class="nn">harpseal.web</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Handler&#39;</span><span class="p">]</span>
+
+<span class="k">def</span> <span class="nf">plugin_required</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">decorator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">match_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">Response</span><span class="p">({</span><span class="s">&#39;ok&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span> <span class="s">&#39;reason&#39;</span><span class="p">:</span> <span class="s">&#39;Plugin does not exist.&#39;</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">decorator</span>
+
+
+<div class="viewcode-block" id="Handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler">[docs]</a><span class="k">class</span> <span class="nc">Handler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugins</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="p">{</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">plugin</span> <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugins</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Handler.raise_error"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.raise_error">[docs]</a>    <span class="k">def</span> <span class="nf">raise_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reason</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">):</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;ok&#39;</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+            <span class="s">&#39;reason&#39;</span><span class="p">:</span> <span class="n">reason</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Handler.parse_comptarget"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.parse_comptarget">[docs]</a>    <span class="k">def</span> <span class="nf">parse_comptarget</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;gte&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span> <span class="n">req</span><span class="o">.</span><span class="n">GET</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;lte&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gte</span> <span class="o">=</span> <span class="n">dtutils</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">gte</span><span class="p">)</span> <span class="k">if</span> <span class="n">gte</span> <span class="k">else</span> <span class="n">dtutils</span><span class="o">.</span><span class="n">ago</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+            <span class="n">lte</span> <span class="o">=</span> <span class="n">dtutils</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">lte</span><span class="p">)</span> <span class="k">if</span> <span class="n">lte</span> <span class="k">else</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">gte</span><span class="p">,</span> <span class="n">lte</span><span class="p">,</span> <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Handler.get_plugin_list"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.get_plugin_list">[docs]</a>    <span class="k">def</span> <span class="nf">get_plugin_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">withdetails</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">name</span><span class="p">:</span> <span class="p">{</span>
+                <span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+                <span class="s">&#39;every&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">every</span><span class="p">,</span>
+                <span class="s">&#39;lastExecutedAt&#39;</span><span class="p">:</span> <span class="n">dtutils</span><span class="o">.</span><span class="n">unixtime</span><span class="p">(</span><span class="n">item</span><span class="o">.</span><span class="n">last_executed_at</span><span class="p">)</span> <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">last_executed_at</span> <span class="k">else</span> <span class="bp">None</span><span class="p">,</span>
+                <span class="s">&#39;lastExecutedResult&#39;</span><span class="p">:</span> <span class="n">item</span><span class="o">.</span><span class="n">last_executed_result</span><span class="p">,</span>
+            <span class="p">}</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">}</span> <span class="k">if</span> <span class="n">withdetails</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="Handler.get_plugin_logs"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.get_plugin_logs">[docs]</a>    <span class="k">def</span> <span class="nf">get_plugin_logs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s">&quot;Plugin does not exist.&quot;</span><span class="p">)</span>
+
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">plugin</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">fielddata</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&#39;type&#39;</span><span class="p">:</span> <span class="n">plugin</span><span class="o">.</span><span class="n">field_types</span><span class="p">[</span><span class="n">k</span><span class="p">],</span>
+                <span class="s">&#39;legends&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;created&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">n</span> <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">v</span><span class="p">],</span>
+                <span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="p">}</span>
+            <span class="n">records</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">objects</span><span class="p">(</span><span class="n">created_at__gte</span><span class="o">=</span><span class="n">gte</span><span class="p">,</span>
+                                               <span class="n">created_at__lte</span><span class="o">=</span><span class="n">lte</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">records</span><span class="p">:</span>
+                <span class="n">items</span> <span class="o">=</span> <span class="p">[</span><span class="n">dtutils</span><span class="o">.</span><span class="n">unixtime</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">created_at</span><span class="p">)]</span>
+                <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                    <span class="n">items</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">items</span><span class="p">,</span> <span class="n">n</span><span class="p">))</span>
+                <span class="n">fielddata</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">items</span><span class="p">)</span>
+            <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">fielddata</span>
+
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Handler.plugin_list_handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.plugin_list_handler">[docs]</a>    <span class="k">def</span> <span class="nf">plugin_list_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_list</span><span class="p">(</span><span class="n">withdetails</span><span class="o">=</span><span class="bp">True</span><span class="p">))</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+    <span class="nd">@plugin_required</span>
+<div class="viewcode-block" id="Handler.plugin_handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.plugin_handler">[docs]</a>    <span class="k">def</span> <span class="nf">plugin_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_comptarget</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gte</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">lte</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="s">&#39;The given datetime cannot be parsed.&#39;</span><span class="p">)</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="n">match_info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">)</span>
+
+        <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_list</span><span class="p">(</span><span class="n">withdetails</span><span class="o">=</span><span class="bp">True</span><span class="p">)[</span><span class="n">name</span><span class="p">]</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_logs</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">gte</span><span class="o">=</span><span class="n">gte</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="n">lte</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Handler.plugins_handler"><a class="viewcode-back" href="../../../harpseal/web.html#harpseal.web.handler.Handler.plugins_handler">[docs]</a>    <span class="k">def</span> <span class="nf">plugins_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">req</span><span class="p">):</span>
+        <span class="n">gte</span><span class="p">,</span> <span class="n">lte</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_comptarget</span><span class="p">(</span><span class="n">req</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">gte</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">lte</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">raise_error</span><span class="p">(</span><span class="s">&#39;The given datetime cannot be parsed.&#39;</span><span class="p">)</span>
+
+        <span class="n">plugins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_list</span><span class="p">(</span><span class="n">withdetails</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;data&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">details</span> <span class="ow">in</span> <span class="n">plugins</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">details</span>
+            <span class="n">data</span><span class="p">[</span><span class="s">&#39;data&#39;</span><span class="p">][</span><span class="n">name</span><span class="p">][</span><span class="s">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_logs</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">gte</span><span class="o">=</span><span class="n">gte</span><span class="p">,</span> <span class="n">lte</span><span class="o">=</span><span class="n">lte</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../../index.html">
+    <img class="logo" src="../../../_static/harpseal-150x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">A next generation linux monitoring tool based on plugins.</p>
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ssut&repo=harpseal&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/ssut/harpseal">
+    <img
+        alt="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+        src="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+    >
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../harpseal/app.html">Harpseal Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../harpseal/utils.html">Harpseal Utils (Helpers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../harpseal/web.html">Harpseal API Server</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../../index.html">Documentation overview</a><ul>
+  <li><a href="../../index.html">Module code</a><ul>
+  <li><a href="../web.html">harpseal.web</a><ul>
+  </ul></li>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, SuHun Han (ssut).
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/ssut/harpseal" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

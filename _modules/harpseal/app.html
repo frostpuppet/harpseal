@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>harpseal.app &mdash; Harpseal 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Harpseal 1.0.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for harpseal.app</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Harpseal App</span>
+<span class="sd">    ~~~~~~~~~~~~</span>
+<span class="sd">    </span>
+<span class="sd">    Harpseal app, includes web server and harpseal daemon.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">aiohttp</span>
+
+<span class="kn">from</span> <span class="nn">mongoengine</span> <span class="kn">import</span> <span class="n">connect</span> <span class="k">as</span> <span class="n">mongo_connect</span>
+
+<span class="kn">from</span> <span class="nn">harpseal.conf</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">harpseal.plugin</span> <span class="kn">import</span> <span class="n">Plugin</span><span class="p">,</span> <span class="n">PluginMixin</span>
+<span class="kn">from</span> <span class="nn">harpseal.web</span> <span class="kn">import</span> <span class="n">WebServer</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Harpseal&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Harpseal"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.app.Harpseal">[docs]</a><span class="k">class</span> <span class="nc">Harpseal</span><span class="p">(</span><span class="n">PluginMixin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Harpseal daemon.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conf</span><span class="o">=</span><span class="s">&#39;config.json&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize harpseal daemon.</span>
+
+<span class="sd">        :param config: configuration file path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c">#: (:class:`asyncio.BaseEventLoop`) Base event-loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="c">#: (:class:`harpseal.conf.Config`) Harpseal configuration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">conf</span><span class="p">)</span>
+        <span class="c">#: (:class:`asyncio.Queue&#39;) Queue that saves plugin result to store data to mongodb</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">queue</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+        <span class="c">#: (:class:`harpseal.web.WebServer`) Harpseal API server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">web</span> <span class="o">=</span> <span class="n">WebServer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c">#: (:class:`tuple`) Plugins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugins</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+        <span class="c">#: (:class:`tuple`) Tasks (by plugins)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tasks</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+
+        <span class="n">Plugin</span><span class="o">.</span><span class="n">_app</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="n">conn_attrs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s">&#39;mongo&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">conn_attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">conn_attrs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">mongo_connect</span><span class="p">(</span><span class="o">**</span><span class="n">conn_attrs</span><span class="p">)</span>
+
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Harpseal.start"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.app.Harpseal.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Start a web server and periodic task after register and execute plugins.</span>
+
+<span class="sd">        :param loop: Base event-loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_plugins</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_plugins</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">web_task</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Task</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">web</span><span class="o">.</span><span class="n">execute</span><span class="p">())</span>
+        <span class="n">done</span><span class="p">,</span> <span class="o">*</span><span class="n">pending</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">web_task</span><span class="p">,</span> <span class="p">])</span>
+        <span class="n">future</span><span class="p">,</span> <span class="o">=</span> <span class="n">done</span>
+        <span class="k">assert</span> <span class="n">pending</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">periodic_task</span><span class="p">()</span>
+</div>
+    <span class="nd">@asyncio.coroutine</span>
+<div class="viewcode-block" id="Harpseal.periodic_task"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.app.Harpseal.periodic_task">[docs]</a>    <span class="k">def</span> <span class="nf">periodic_task</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store a new mongo instance with given plugin data to mongodb when got a new result.&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">plugin</span><span class="p">,</span> <span class="n">result</span> <span class="o">=</span> <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">queue</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">attrs</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">attrs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="n">model</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">name</span><span class="p">]()</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="o">**</span><span class="n">attrs</span><span class="p">)</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<p class="logo">
+  <a href="../../index.html">
+    <img class="logo" src="../../_static/harpseal-150x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">A next generation linux monitoring tool based on plugins.</p>
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ssut&repo=harpseal&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/ssut/harpseal">
+    <img
+        alt="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+        src="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+    >
+</a>
+</p>
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/app.html">Harpseal Base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/utils.html">Harpseal Utils (Helpers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/web.html">Harpseal API Server</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, SuHun Han (ssut).
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+    </div>
+
+    
+    <a href="https://github.com/ssut/harpseal" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
+    
+
+    
+  </body>
+</html>

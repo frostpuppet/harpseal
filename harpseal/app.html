@@ -45,7 +45,7 @@
 <p>Harpseal app, includes web server and harpseal daemon.</p>
 <dl class="class">
 <dt id="harpseal.app.Harpseal">
-<em class="property">class </em><code class="descclassname">harpseal.app.</code><code class="descname">Harpseal</code><span class="sig-paren">(</span><em>conf='config.json'</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.app.Harpseal" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">harpseal.app.</code><code class="descname">Harpseal</code><span class="sig-paren">(</span><em>conf='config.json'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/app.html#Harpseal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.app.Harpseal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#harpseal.plugin.PluginMixin" title="harpseal.plugin.PluginMixin"><code class="xref py py-class docutils literal"><span class="pre">harpseal.plugin.PluginMixin</span></code></a></p>
 <p>Harpseal daemon.</p>
 <dl class="attribute">
@@ -62,7 +62,7 @@
 
 <dl class="method">
 <dt id="harpseal.app.Harpseal.periodic_task">
-<code class="descname">periodic_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.app.Harpseal.periodic_task" title="Permalink to this definition">¶</a></dt>
+<code class="descname">periodic_task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/app.html#Harpseal.periodic_task"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.app.Harpseal.periodic_task" title="Permalink to this definition">¶</a></dt>
 <dd><p>Store a new mongo instance with given plugin data to mongodb when got a new result.</p>
 </dd></dl>
 
@@ -80,7 +80,7 @@
 
 <dl class="method">
 <dt id="harpseal.app.Harpseal.start">
-<code class="descname">start</code><span class="sig-paren">(</span><em>loop</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.app.Harpseal.start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">start</code><span class="sig-paren">(</span><em>loop</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/app.html#Harpseal.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.app.Harpseal.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a web server and periodic task after register and execute plugins.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -112,7 +112,7 @@
 <p>Classes, include Mixin, Task and others.</p>
 <dl class="class">
 <dt id="harpseal.classes.PeriodicTask">
-<em class="property">class </em><code class="descclassname">harpseal.classes.</code><code class="descname">PeriodicTask</code><span class="sig-paren">(</span><em>plugin</em>, <em>app</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.PeriodicTask" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">harpseal.classes.</code><code class="descname">PeriodicTask</code><span class="sig-paren">(</span><em>plugin</em>, <em>app</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#PeriodicTask"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.PeriodicTask" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>A class for creating periodic task.</p>
 <dl class="attribute">
@@ -123,13 +123,13 @@
 
 <dl class="method">
 <dt id="harpseal.classes.PeriodicTask.run">
-<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.PeriodicTask.run" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#PeriodicTask.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.PeriodicTask.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute plugin and then put the result into app&#8217;s queue.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="harpseal.classes.PeriodicTask.start">
-<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.PeriodicTask.start" title="Permalink to this definition">¶</a></dt>
+<code class="descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#PeriodicTask.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.PeriodicTask.start" title="Permalink to this definition">¶</a></dt>
 <dd><p>Start a periodic task.</p>
 </dd></dl>
 
@@ -137,25 +137,25 @@
 
 <dl class="class">
 <dt id="harpseal.classes.StrictDict">
-<em class="property">class </em><code class="descclassname">harpseal.classes.</code><code class="descname">StrictDict</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.StrictDict" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">harpseal.classes.</code><code class="descname">StrictDict</code><span class="sig-paren">(</span><em>fields</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#StrictDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.StrictDict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>A dictionary-like semi-dynamic dict class.
 Values are stored in strictly with the field types given.</p>
 <dl class="method">
 <dt id="harpseal.classes.StrictDict.get">
-<code class="descname">get</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.StrictDict.get" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#StrictDict.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.StrictDict.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a value of <cite>name</cite> key.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="harpseal.classes.StrictDict.keys">
-<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.StrictDict.keys" title="Permalink to this definition">¶</a></dt>
+<code class="descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#StrictDict.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.StrictDict.keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return the keys of dict. The result is not a kind of <cite>view</cite>.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="harpseal.classes.StrictDict.set">
-<code class="descname">set</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.classes.StrictDict.set" title="Permalink to this definition">¶</a></dt>
+<code class="descname">set</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/classes.html#StrictDict.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.classes.StrictDict.set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set a value of <cite>name</cite> key; to be stored in strictly (type-sensitive).</p>
 </dd></dl>
 
@@ -167,7 +167,7 @@ Values are stored in strictly with the field types given.</p>
 <p>Harpseal config parser based on JSON</p>
 <dl class="class">
 <dt id="harpseal.conf.Config">
-<em class="property">class </em><code class="descclassname">harpseal.conf.</code><code class="descname">Config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.conf.Config" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">harpseal.conf.</code><code class="descname">Config</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/conf.html#Config"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.conf.Config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Config parser, working like <cite>dict</cite>.</p>
 </dd></dl>
@@ -177,7 +177,7 @@ Values are stored in strictly with the field types given.</p>
 <h2>Harpseal Plugin<a class="headerlink" href="#harpseal-plugin" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="harpseal.plugin.Plugin">
-<em class="property">class </em><code class="descclassname">harpseal.plugin.</code><code class="descname">Plugin</code><a class="headerlink" href="#harpseal.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">harpseal.plugin.</code><code class="descname">Plugin</code><a class="reference internal" href="../_modules/harpseal/plugin.html#Plugin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.Plugin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Base plugin model</p>
 <p>Usage:</p>
@@ -211,13 +211,13 @@ Values are stored in strictly with the field types given.</p>
 </div>
 <dl class="method">
 <dt id="harpseal.plugin.Plugin.call">
-<code class="descname">call</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.Plugin.call" title="Permalink to this definition">¶</a></dt>
+<code class="descname">call</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#Plugin.call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.Plugin.call" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a command on the event-loop and then return the result when finished.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="harpseal.plugin.Plugin.data_form">
-<code class="descname">data_form</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.Plugin.data_form" title="Permalink to this definition">¶</a></dt>
+<code class="descname">data_form</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#Plugin.data_form"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.Plugin.data_form" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -234,7 +234,7 @@ Values are stored in strictly with the field types given.</p>
 
 <dl class="method">
 <dt id="harpseal.plugin.Plugin.execute">
-<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.Plugin.execute" title="Permalink to this definition">¶</a></dt>
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#Plugin.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.Plugin.execute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute plugin</p>
 </dd></dl>
 
@@ -252,7 +252,7 @@ Values are stored in strictly with the field types given.</p>
 
 <dl class="method">
 <dt id="harpseal.plugin.Plugin.init_model">
-<code class="descname">init_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.Plugin.init_model" title="Permalink to this definition">¶</a></dt>
+<code class="descname">init_model</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#Plugin.init_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.Plugin.init_model" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -293,7 +293,7 @@ Values are stored in strictly with the field types given.</p>
 
 <dl class="method">
 <dt id="harpseal.plugin.Plugin.provider">
-<code class="descname">provider</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.Plugin.provider" title="Permalink to this definition">¶</a></dt>
+<code class="descname">provider</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#Plugin.provider"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.Plugin.provider" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plugin provider that returns a plugin&#8217;s result, this method must be overridden.</p>
 </dd></dl>
 
@@ -301,17 +301,17 @@ Values are stored in strictly with the field types given.</p>
 
 <dl class="class">
 <dt id="harpseal.plugin.PluginMixin">
-<em class="property">class </em><code class="descclassname">harpseal.plugin.</code><code class="descname">PluginMixin</code><a class="headerlink" href="#harpseal.plugin.PluginMixin" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">harpseal.plugin.</code><code class="descname">PluginMixin</code><a class="reference internal" href="../_modules/harpseal/plugin.html#PluginMixin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.PluginMixin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">harpseal.plugin._PluginMixin</span></code></p>
 <p>Mixin class for Plugin management.</p>
 <dl class="method">
 <dt id="harpseal.plugin.PluginMixin.register_plugins">
-<code class="descname">register_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.PluginMixin.register_plugins" title="Permalink to this definition">¶</a></dt>
+<code class="descname">register_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#PluginMixin.register_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.PluginMixin.register_plugins" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="harpseal.plugin.PluginMixin.run_plugins">
-<code class="descname">run_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.plugin.PluginMixin.run_plugins" title="Permalink to this definition">¶</a></dt>
+<code class="descname">run_plugins</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/plugin.html#PluginMixin.run_plugins"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.plugin.PluginMixin.run_plugins" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -321,7 +321,7 @@ Values are stored in strictly with the field types given.</p>
 <h2>Models<a class="headerlink" href="#models" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="harpseal.models.make_model">
-<code class="descclassname">harpseal.models.</code><code class="descname">make_model</code><span class="sig-paren">(</span><em>name</em>, <em>args</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.models.make_model" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">harpseal.models.</code><code class="descname">make_model</code><span class="sig-paren">(</span><em>name</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/harpseal/models.html#make_model"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#harpseal.models.make_model" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new model with name and arguments given.</p>
 </dd></dl>
 
@@ -334,17 +334,51 @@ Values are stored in strictly with the field types given.</p>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Harpseal Base</a><ul>
-<li><a class="reference internal" href="#harpseal-app">Harpseal App</a></li>
-<li><a class="reference internal" href="#harpseal-classes">Harpseal Classes</a></li>
-<li><a class="reference internal" href="#config-parser">Config parser</a></li>
-<li><a class="reference internal" href="#harpseal-plugin">Harpseal Plugin</a></li>
-<li><a class="reference internal" href="#models">Models</a></li>
+<p class="logo">
+  <a href="../index.html">
+    <img class="logo" src="../_static/harpseal-150x150.png" alt="Logo"/>
+    
+  </a>
+</p>
+
+
+
+<p class="blurb">A next generation linux monitoring tool based on plugins.</p>
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=ssut&repo=harpseal&type=watch&count=true&size=large"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
+
+
+
+
+    
+
+<p>
+<a href="https://travis-ci.org/ssut/harpseal">
+    <img
+        alt="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+        src="https://secure.travis-ci.org/ssut/harpseal.png?branch=master"
+    >
+</a>
+</p>
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Harpseal Base</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#harpseal-app">Harpseal App</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#harpseal-classes">Harpseal Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#config-parser">Config parser</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#harpseal-plugin">Harpseal Plugin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#models">Models</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">Harpseal Utils (Helpers)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="web.html">Harpseal API Server</a></li>
 </ul>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -354,13 +388,6 @@ Values are stored in strictly with the field types given.</p>
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/harpseal/app.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
@@ -390,6 +417,10 @@ Values are stored in strictly with the field types given.</p>
           rel="nofollow">Page source</a>
     </div>
 
+    
+    <a href="https://github.com/ssut/harpseal" class="github">
+        <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"  class="github"/>
+    </a>
     
 
     
