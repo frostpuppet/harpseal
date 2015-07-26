@@ -60,8 +60,25 @@ class WebServer(object):
         return middleware
 
     @asyncio.coroutine
+    def authenticate_middleware(self, app, handler):
+        key = self.parent.config['server'].get('key', '')
+        @asyncio.coroutine
+        def middleware(req):
+            data = yield from handler(req)
+            if key:
+                given = req.GET.get('key', '')
+                if key != given:
+                    data = Response({
+                        'ok': False,
+                        'reason': 'Invalid authentication credential.',
+                    })
+            return data
+        return middleware
+
+    @asyncio.coroutine
     def execute(self):
         self.app = web.Application(middlewares=[self.whitelist_middleware,
+                                                self.authenticate_middleware,
                                                 self.jsonp_middleware])
         self.handler = self.app.make_handler()
         self.server = self.parent.loop.create_server(self.handler,
