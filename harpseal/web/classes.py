@@ -1,6 +1,6 @@
 """
-    harpseal.web.classes
-    ~~~~~~~~~~~~~~~~~~~~
+    Web Classes
+    ~~~~~~~~~~~
 
 """
 import asyncio
@@ -11,6 +11,7 @@ from aiohttp import web
 __all__ = ['Response']
 
 class Response(web.StreamResponse):
+    """Response object."""
     def __init__(self, body=None, status=200, reason=None, headers=None):
         super().__init__(status=status, reason=reason, headers=headers)
 
@@ -19,14 +20,17 @@ class Response(web.StreamResponse):
         elif 'ok' not in body:
             body['ok'] = True
         self.headers['Content-Type'] = self.content_type = 'application/json'
+        #: (:class:`byte`) Response content (`utf-8` data)
         self.body = body
 
     @property
     def body(self):
+        """`body` getter"""
         return self._body
 
     @body.setter
     def body(self, data):
+        """`body` setter; this method checks if data is available, and convert to json format."""
         if data is not None and not isinstance(data, dict):
             raise TypeError('data argument must be dict.')
 

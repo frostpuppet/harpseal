@@ -1,6 +1,6 @@
 """
-    harpseal.web.handler
-    ~~~~~~~~~~~~~~~~~~~~
+    Web Handler
+    ~~~~~~~~~~~
 
 """
 import asyncio

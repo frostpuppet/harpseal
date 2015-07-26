@@ -23,6 +23,8 @@ import shlex
 sys.path.insert(0, os.path.abspath('..'))
 from harpseal import __version__ as VERSION
 
+import alabaster
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -32,10 +34,12 @@ from harpseal import __version__ as VERSION
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    'alabaster',
     'sphinx.ext.autodoc',
     'sphinx.ext.intersphinx',
     'sphinx.ext.coverage',
-    'sphinx.ext.todo'
+    'sphinx.ext.todo',
+    'sphinx.ext.viewcode',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -120,11 +124,19 @@ html_theme = 'alabaster'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {
+    'logo': 'harpseal-150x150.png',
+    'description': 'A next generation linux monitoring tool based on plugins.',
+    'github_user': 'ssut',
+    'github_repo': 'harpseal',
+    'github_button': True,
+    'github_banner': True,
+    'travis_button': True,
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
-
+html_theme_path = [alabaster.get_path()]
+print(alabaster.get_path())
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 #html_title = None
@@ -160,7 +172,15 @@ html_static_path = ['_static']
 #html_use_smartypants = True
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {
+    '**': [
+        'about.html',
+        'navigation.html',
+        'relations.html',
+        'searchbox.html',
+        'donate.html',
+    ]
+}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
