@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>harpseal.web package &mdash; Harpseal 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Harpseal 1.0.0 documentation" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="harpseal-web-package">
+<h1>harpseal.web package<a class="headerlink" href="#harpseal-web-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="harpseal.web.classes.html">harpseal.web.classes module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="harpseal.web.classes.html#harpseal-web-classes">harpseal.web.classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="harpseal.web.handler.html">harpseal.web.handler module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="harpseal.web.handler.html#harpseal-web-handler">harpseal.web.handler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="harpseal.web.router.html">harpseal.web.router module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="harpseal.web.router.html#harpseal-web-router">harpseal.web.router</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-harpseal.web"></span><div class="section" id="webserver">
+<h3>WebServer<a class="headerlink" href="#webserver" title="Permalink to this headline">¶</a></h3>
+<p>The web server is based on <a class="reference external" href="https://github.com/KeepSafe/aiohttp/">aiohttp</a> package.</p>
+<dl class="class">
+<dt id="harpseal.web.WebServer">
+<em class="property">class </em><code class="descclassname">harpseal.web.</code><code class="descname">WebServer</code><span class="sig-paren">(</span><em>parent</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.web.WebServer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Harpseal WebServer Class</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>parent</strong> &#8211; Harpseal instance</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="harpseal.web.WebServer.authenticate_middleware">
+<code class="descname">authenticate_middleware</code><span class="sig-paren">(</span><em>app</em>, <em>handler</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.web.WebServer.authenticate_middleware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deny if key is set and does not match with <cite>key</cite> parameter given.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="harpseal.web.WebServer.execute">
+<code class="descname">execute</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.web.WebServer.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start a web server.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="harpseal.web.WebServer.jsonp_middleware">
+<code class="descname">jsonp_middleware</code><span class="sig-paren">(</span><em>app</em>, <em>handler</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.web.WebServer.jsonp_middleware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Retrurn data as JSONP callback format when <cite>callback</cite> parameter given.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="harpseal.web.WebServer.parent">
+<code class="descname">parent</code><em class="property"> = None</em><a class="headerlink" href="#harpseal.web.WebServer.parent" title="Permalink to this definition">¶</a></dt>
+<dd><p>(<a class="reference internal" href="app.html#harpseal.app.Harpseal" title="harpseal.app.Harpseal"><code class="xref py py-class docutils literal"><span class="pre">harpseal.app.Harpseal</span></code></a>) Harpseal instance</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="harpseal.web.WebServer.router">
+<code class="descname">router</code><em class="property"> = None</em><a class="headerlink" href="#harpseal.web.WebServer.router" title="Permalink to this definition">¶</a></dt>
+<dd><p>(<a class="reference internal" href="web.html#harpseal.web.router.Router" title="harpseal.web.router.Router"><code class="xref py py-class docutils literal"><span class="pre">harpseal.web.router.Router</span></code></a>) Web router</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="harpseal.web.WebServer.whitelist">
+<code class="descname">whitelist</code><em class="property"> = None</em><a class="headerlink" href="#harpseal.web.WebServer.whitelist" title="Permalink to this definition">¶</a></dt>
+<dd><p>(<code class="xref py py-class docutils literal"><span class="pre">list</span></code>) IP whitelist</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="harpseal.web.WebServer.whitelist_middleware">
+<code class="descname">whitelist_middleware</code><span class="sig-paren">(</span><em>app</em>, <em>handler</em><span class="sig-paren">)</span><a class="headerlink" href="#harpseal.web.WebServer.whitelist_middleware" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deny if user&#8217;s ipaddress is not in the whitelist.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">harpseal.web package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a><ul>
+<li><a class="reference internal" href="#webserver">WebServer</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/harpseal/harpseal.web.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2015, SuHun Han (ssut).
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="../_sources/harpseal/harpseal.web.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
