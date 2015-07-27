@@ -4,7 +4,7 @@ python:
 - 3.3
 - 3.4
 install:
-- python -c "import asyncio"; if [ $? -eq 1 ] then
+- python -c "import asyncio"; if [ $? -eq 1 ]; then
   pip install asyncio;
   fi
 - pip install -r test-requirements.txt
