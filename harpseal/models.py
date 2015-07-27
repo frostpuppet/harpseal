@@ -7,6 +7,8 @@ from datetime import datetime
 
 from mongoengine import *
 
+from harpseal.conf import Config
+
 __all__ = ['make_model']
 
 class Items(DynamicEmbeddedDocument):
@@ -19,8 +21,11 @@ def make_model(name, args):
         self.items = items
         self.created_at = datetime.now()
 
+    expires = Config()['expires']
     meta = {
-        'indexes': ['-created_at']
+        'indexes': [
+            {'fields': ['-created_at'], 'expireAfterSeconds': expires}
+        ]
     }
 
     cls = type(name, (DynamicDocument, ), {'add': add, 'meta': meta})

@@ -1,4 +1,5 @@
 {
+    "expires": 43200,
     "plugins": [
         "cpu",
         "mem",

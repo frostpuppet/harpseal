@@ -7,7 +7,9 @@
 import os
 import json
 
-class Config(object):
+from harpseal.classes import Singleton
+
+class Config(metaclass=Singleton):
     """Config parser, working like `dict`."""
 
     def __init__(self, path):
