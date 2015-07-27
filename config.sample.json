@@ -6,10 +6,7 @@
         "network"
     ],
     "mongo": {
-        "db": "harpseal",
-        "_user": "user",
-        "_pass": "pass",
-        "_host": "mongodb://admin:qwerty@localhost/harpseal"
+        "db": "harpseal"
     },
     "server": {
         "host": "0.0.0.0",
