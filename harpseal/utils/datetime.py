@@ -39,7 +39,7 @@ def parse(text, fmt=r'%Y-%m-%d'):
     else:
         if len(text) == 13:
             num /= 1000
-        dt = datetime.fromtimestamp(num)
+        dt = datetime.utcfromtimestamp(num)
     if not dt:
         if fmt == r'%Y-%m-%d' and ' ' in text:
             count = text.count(':') + 1
