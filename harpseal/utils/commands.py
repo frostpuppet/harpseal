@@ -8,7 +8,7 @@ import shlex
 
 __all__ = ['execute']
 
-class DateProtocol(asyncio.SubprocessProtocol):
+class DataProtocol(asyncio.SubprocessProtocol):
     def __init__(self, exit_future):
         self.exit_future = exit_future
         self.output = bytearray()
@@ -27,7 +27,7 @@ def execute(app, command):
 
     # Create the subprocess controlled by the protocol DataProtocol,
     # redirect the standard output into a pipe
-    process = app.loop.subprocess_exec(lambda: DataProtocol(exut_future),
+    process = app.loop.subprocess_exec(lambda: DataProtocol(exit_future),
                                        *command, stdin=None, stderr=None)
     transport, protocol = yield from process
 
