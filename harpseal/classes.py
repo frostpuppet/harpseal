@@ -21,6 +21,7 @@ class PeriodicTask(object):
 
     @asyncio.coroutine
     def _run(self):
+        yield from self.run()
         while 1:
             yield from asyncio.sleep(self._interval)
             yield from self.run()
