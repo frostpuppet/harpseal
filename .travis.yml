@@ -16,8 +16,9 @@ install:
 - pip install -r test-requirements.txt
 - pip install pytest-cov coveralls
 script:
-- py.test --cov harpseal --durations=20
+- coverage run --source harpseal -m py.test --durations=20
 after_success:
+- coverage report
 - coveralls --rcfile=.coveragerc
 notifications:
   email: false
