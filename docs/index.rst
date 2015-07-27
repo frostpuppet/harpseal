@@ -68,7 +68,10 @@ HTTP API
 Creating Plugins
 ----------------
 
-(TBA)
+.. toctree::
+    :maxdepth: 2
+
+    harpseal/plugins
 
 References
 ----------
