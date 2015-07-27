@@ -79,7 +79,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">text</span><span class="p">)</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
             <span class="n">num</span> <span class="o">/=</span> <span class="mi">1000</span>
-        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">fromtimestamp</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">utcfromtimestamp</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">dt</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">fmt</span> <span class="o">==</span> <span class="s">r&#39;%Y-%m-</span><span class="si">%d</span><span class="s">&#39;</span> <span class="ow">and</span> <span class="s">&#39; &#39;</span> <span class="ow">in</span> <span class="n">text</span><span class="p">:</span>
             <span class="n">count</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
@@ -129,6 +129,9 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../harpseal/api.html">Harpseal API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../harpseal/plugins.html">Creating plugins</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../harpseal/app.html">Harpseal Base</a></li>

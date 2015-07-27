@@ -61,6 +61,7 @@
 
     <span class="nd">@asyncio.coroutine</span>
     <span class="k">def</span> <span class="nf">_run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
         <span class="k">while</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_interval</span><span class="p">)</span>
             <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
@@ -104,7 +105,17 @@
 </div>
 <div class="viewcode-block" id="StrictDict.keys"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.classes.StrictDict.keys">[docs]</a>    <span class="k">def</span> <span class="nf">keys</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return the keys of dict. The result is not a kind of `view`.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span>
+
+</div></div>
+<span class="k">class</span> <span class="nc">Singleton</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Singleton pattern implementation.&quot;&quot;&quot;</span>
+
+    <span class="n">_instances</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">cls</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">:</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">cls</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">Singleton</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="n">cls</span><span class="p">]</span>
 </pre></div>
 
           </div>
@@ -146,6 +157,9 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../harpseal/api.html">Harpseal API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/plugins.html">Creating plugins</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../harpseal/app.html">Harpseal Base</a></li>

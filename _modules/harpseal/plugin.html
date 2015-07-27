@@ -53,7 +53,7 @@
 <span class="kn">from</span> <span class="nn">harpseal.classes</span> <span class="kn">import</span> <span class="n">PeriodicTask</span><span class="p">,</span> <span class="n">StrictDict</span>
 <span class="kn">from</span> <span class="nn">harpseal.models</span> <span class="kn">import</span> <span class="n">make_model</span>
 
-<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin"><a class="viewcode-back" href="../../harpseal/plugins.html#harpseal.plugin.Plugin">[docs]</a><span class="k">class</span> <span class="nc">Plugin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Base plugin model</span>
 
 <span class="sd">    Usage:</span>
@@ -118,19 +118,19 @@
         <span class="c">#: (:class:`bool`) Last executed result</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_executed_result</span> <span class="o">=</span> <span class="bp">None</span>
 
-<div class="viewcode-block" id="Plugin.init_model"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.init_model"><a class="viewcode-back" href="../../harpseal/plugins.html#harpseal.plugin.Plugin.init_model">[docs]</a>    <span class="k">def</span> <span class="nf">init_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">modelname</span> <span class="o">=</span> <span class="s">&#39;{}_{}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">title</span><span class="p">(),</span> <span class="n">name</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">models</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_model</span><span class="p">(</span><span class="n">modelname</span><span class="p">,</span> <span class="n">fields</span><span class="p">)</span>
 </div>
-<div class="viewcode-block" id="Plugin.data_form"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.data_form">[docs]</a>    <span class="k">def</span> <span class="nf">data_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.data_form"><a class="viewcode-back" href="../../harpseal/plugins.html#harpseal.plugin.Plugin.data_form">[docs]</a>    <span class="k">def</span> <span class="nf">data_form</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">form</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">fields</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">form</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">StrictDict</span><span class="p">(</span><span class="n">fields</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">form</span>
 </div>
     <span class="nd">@asyncio.coroutine</span>
-<div class="viewcode-block" id="Plugin.execute"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.execute"><a class="viewcode-back" href="../../harpseal/plugins.html#harpseal.plugin.Plugin.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute plugin&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">iscoroutinefunction</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">provider</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s">&quot;You must wrap the function with &#39;@asyncio.coroutine&#39; decorator.&quot;</span><span class="p">)</span>
@@ -148,7 +148,7 @@
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="p">)</span>
 </div>
     <span class="nd">@asyncio.coroutine</span>
-<div class="viewcode-block" id="Plugin.call"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.call"><a class="viewcode-back" href="../../harpseal/plugins.html#harpseal.plugin.Plugin.call">[docs]</a>    <span class="k">def</span> <span class="nf">call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Execute a command on the event-loop and then return the result when finished.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">Plugin</span><span class="o">.</span><span class="n">_app</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;The property ._app is not assigned.&quot;</span><span class="p">)</span>
@@ -156,7 +156,7 @@
         <span class="k">return</span> <span class="n">result</span>
 </div>
     <span class="nd">@asyncio.coroutine</span>
-<div class="viewcode-block" id="Plugin.provider"><a class="viewcode-back" href="../../harpseal/app.html#harpseal.plugin.Plugin.provider">[docs]</a>    <span class="k">def</span> <span class="nf">provider</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Plugin.provider"><a class="viewcode-back" href="../../harpseal/plugins.html#harpseal.plugin.Plugin.provider">[docs]</a>    <span class="k">def</span> <span class="nf">provider</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Plugin provider that returns a plugin&#39;s result, this method must be overridden.&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s">&quot;.provider() must be overridden.&quot;</span><span class="p">)</span>
 </div>
@@ -253,6 +253,9 @@
 <h3>Navigation</h3>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../harpseal/api.html">Harpseal API</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../harpseal/plugins.html">Creating plugins</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../harpseal/app.html">Harpseal Base</a></li>
