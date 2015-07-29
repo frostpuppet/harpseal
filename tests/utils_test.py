@@ -6,24 +6,18 @@ from pytest import mark, raises
 from harpseal.utils import commands
 from harpseal.utils import datetime as dtutils
 
-class MockApp(object):
-    def __init__(self, loop):
-        self.loop = loop
-
 def test_commands():
     @asyncio.coroutine
-    def test(app, future):
-        result = yield from commands.execute(app, 'echo 1')
-        if not result:
-            result = yield from commands.execute(app, 'echo 1')  # retry
+    def test(future):
+        result = yield from commands.execute('pwd')
+        print(result)
         future.set_result(result)
 
     loop = asyncio.get_event_loop()
-    mock = MockApp(loop)
     future = asyncio.Future()
-    loop.run_until_complete(test(mock, future))
+    loop.run_until_complete(test(future))
     loop.close()
-    assert future.result() == '1'
+    assert future.result()
 
 @mark.parametrize('params,expected', [
     ([datetime.utcfromtimestamp(1437983134), True], 1437983134000),
