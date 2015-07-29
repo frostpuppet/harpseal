@@ -112,7 +112,7 @@ class Plugin(object):
         """Execute a command on the event-loop and then return the result when finished."""
         if Plugin._app is None:
             raise AssertionError("The property ._app is not assigned.")
-        result = yield from execute(Plugin._app, command)
+        result = yield from execute(command)
         return result
 
     @asyncio.coroutine

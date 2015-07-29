@@ -5,40 +5,18 @@
 """
 import asyncio
 import shlex
+from asyncio import subprocess
 
 __all__ = ['execute']
 
-class DataProtocol(asyncio.SubprocessProtocol):
-    def __init__(self, exit_future):
-        self.exit_future = exit_future
-        self.output = bytearray()
-
-    def pipe_data_received(self, fd, data):
-        self.output.extend(data)
-
-    def process_exited(self):
-        self.exit_future.set_result(True)
-
 @asyncio.coroutine
-def execute(app, command):
+def execute(command):
     """Execute a command."""
     command = shlex.split(command)
-    exit_future = asyncio.Future()
 
-    # Create the subprocess controlled by the protocol DataProtocol,
-    # redirect the standard output into a pipe
-    process = app.loop.subprocess_exec(lambda: DataProtocol(exit_future),
-                                       *command, stdin=None, stderr=None)
-    transport, protocol = yield from process
+    # Create the subprocess, redirect the standard output into a pipe
+    process = yield from asyncio.create_subprocess_exec(*command, 
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    stdout, _ = yield from process.communicate()
 
-    # Wait for the subprocess exit using the process_exited() method
-    # of the protocol
-    yield from exit_future
-
-    # Close the stdout pipe
-    transport.close()
-
-    # Read the output which was collected by the pipe_data_received()
-    # method of the protocol
-    data = bytes(protocol.output)
-    return data.decode('ascii').rstrip()
+    return stdout
