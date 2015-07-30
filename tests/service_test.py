@@ -39,8 +39,8 @@ class TestHarpseal(unittest.TestCase):
 
     @async_test
     def test(self, loop):
-        task = yield from self.initapp(loop)
-        yield from asyncio.sleep(3)
+        app = yield from self.initapp(loop)
+        yield from asyncio.sleep(5)
         
         req, body = yield from self.get('/')
         assert req.status == 404
@@ -83,3 +83,15 @@ class TestHarpseal(unittest.TestCase):
         req, body = yield from self.get('/plugins/list?callback=$.test')
         assert req.status == 200
         assert '$.test({' in body
+
+        # Test for key
+        app.config._conf['server']['key'] = '1234'
+        req, body = yield from self.get('/plugins/list')
+        assert req.status == 200
+        assert not body['ok']
+        req, body = yield from self.get('/plugins/list?key=1234')
+        assert req.status == 200
+        assert body['ok']
+
+        # Delete WebServer instance before quit
+        del app.web
