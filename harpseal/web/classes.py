@@ -8,10 +8,11 @@ import json
 
 from aiohttp import web
 
-__all__ = ['Response']
+__all__ = ['Response', 'MockRequest']
 
 class Response(web.StreamResponse):
     """Response object."""
+
     def __init__(self, body=None, status=200, reason=None, headers=None):
         super().__init__(status=status, reason=reason, headers=headers)
 
@@ -47,3 +48,11 @@ class Response(web.StreamResponse):
         if body is not None:
             self.write(body)
         yield from super().write_eof()
+
+
+class MockRequest(object):
+    """Mock object for :class:`aiohttp.web.Request`."""
+
+    def __init__(self, get, match_info):
+        self.GET = get
+        self.match_info = match_info
