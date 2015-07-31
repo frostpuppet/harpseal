@@ -27,3 +27,6 @@ class Router(object):
             'GET', r'/plugins/all', self.handler.plugins_handler)
         self.parent.router.add_route(
             'GET', r'/plugins/{name}', self.handler.plugin_handler)
+        # Websocket handler
+        self.parent.router.add_route(
+            'GET', r'/', self.handler.websocket_handler)

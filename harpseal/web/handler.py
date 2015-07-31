@@ -4,6 +4,8 @@
 
 """
 import asyncio
+import aiohttp
+from aiohttp import web
 from datetime import datetime
 
 from harpseal.utils import datetime as dtutils
@@ -89,6 +91,28 @@ class Handler(object):
             data[k] = fielddata
 
         return data
+
+    @asyncio.coroutine
+    def websocket_handler(self, req):
+        ws = web.WebSocketResponse()
+        ws.start(req)
+        print(ws)
+
+        while True:
+            msg = yield from ws.receive()
+
+            if msg.tp == aiohttp.MsgType.text:
+                if msg.data == 'close':
+                    yield from ws.close()
+                else:
+                    ws.send_str(msg.data + '/answer')
+            elif msg.tp == aiohttp.MsgType.close:
+                print('websocket connection closed')
+            elif msg.tp == aiohttp.MsgType.error:
+                print('ws connection closed with exception %s',
+                      ws.exception())
+
+        return ws
 
     @asyncio.coroutine
     def plugin_list_handler(self, req):
