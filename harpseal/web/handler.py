@@ -5,10 +5,12 @@
 """
 import asyncio
 import aiohttp
+import json
 from aiohttp import web
 from datetime import datetime
 
 from harpseal.utils import datetime as dtutils
+from harpseal.web.classes import MockRequest
 from harpseal.web import Response
 
 __all__ = ['Handler']
@@ -94,18 +96,39 @@ class Handler(object):
 
     @asyncio.coroutine
     def websocket_handler(self, req):
+        """Handling websocket connections."""
         ws = web.WebSocketResponse()
         ws.start(req)
-        print(ws)
+
+        routes = {}
+        for name in dir(self):
+            if name.endswith('_handler'):
+                routename = name[:-8]
+                routes[routename] = getattr(self, name)
 
         while True:
             msg = yield from ws.receive()
-
             if msg.tp == aiohttp.MsgType.text:
-                if msg.data == 'close':
-                    yield from ws.close()
+                try:
+                    data = json.loads(msg.data)
+                except ValueError:
+                    error = json.dumps({'error': True, 'reason': 'You must pass a JSON string.'})
+                    ws.send_str(error)
                 else:
-                    ws.send_str(msg.data + '/answer')
+                    if 'close' in data:
+                        yield from ws.close()
+                    else:
+                        handler = data.get('request', '')
+                        match_info = {k: v for k, v in data.items() if k not in ('request', 'params', )}
+                        params = {k: str(v) for k, v in data.get('params', {}).items()}
+                        mock = MockRequest(get=params, match_info=match_info)
+                        if not handler or handler not in routes:
+                            error = json.dumps({'error': True, 'reason': 'You must pass a handler name.'})
+                            ws.send_str(error)
+                        else:
+                            resp = yield from routes[handler](mock)
+                            body = resp._body.decode('utf-8')
+                            ws.send_str(body)
             elif msg.tp == aiohttp.MsgType.close:
                 print('websocket connection closed')
             elif msg.tp == aiohttp.MsgType.error:
