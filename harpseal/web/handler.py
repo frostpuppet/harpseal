@@ -103,6 +103,8 @@ class Handler(object):
         routes = {}
         for name in dir(self):
             if name.endswith('_handler'):
+                if name == 'websocket_handler':
+                    continue
                 routename = name[:-8]
                 routes[routename] = getattr(self, name)
 
