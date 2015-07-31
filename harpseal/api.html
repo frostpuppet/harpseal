@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="Harpseal 1.0.0 documentation" href="../index.html" />
-    <link rel="next" title="&lt;no title&gt;" href="../usage.html" />
+    <link rel="next" title="Creating plugins" href="plugins.html" />
     <link rel="prev" title="Harpseal" href="../index.html" />
    
   
@@ -189,6 +189,22 @@
 </div>
 </div>
 </div>
+<div class="section" id="websocket-support">
+<h2>4. WebSocket Support<a class="headerlink" href="#websocket-support" title="Permalink to this headline">¶</a></h2>
+<p>You can use websocket methods by accessing the url <code class="docutils literal"><span class="pre">/</span></code>.</p>
+<p>The request format is as follows:</p>
+<div class="highlight-json"><div class="highlight"><pre><span class="p">{</span>
+    <span class="nt">&quot;request&quot;</span><span class="p">:</span> <span class="s2">&quot;handler-name&quot;</span><span class="p">,</span>
+    <span class="nt">&quot;params&quot;</span><span class="p">:</span> <span class="p">{}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li>The <strong>handler-name</strong> means the method name of <a class="reference internal" href="web.html#harpseal.web.handler.Handler" title="harpseal.web.handler.Handler"><code class="xref py py-class docutils literal"><span class="pre">harpseal.web.handler.Handler</span></code></a> which contains <code class="docutils literal"><span class="pre">_handler</span></code> in its name.</li>
+<li>Params can contain HTTP parameters which are obtained as above such as <code class="docutils literal"><span class="pre">key</span></code> or <code class="docutils literal"><span class="pre">gte</span></code>.</li>
+<li>If you want to pass the <em>name</em> of the plugin, you&#8217;ll have to add <code class="docutils literal"><span class="pre">name</span></code> into your JSON to be able to identify plugin.</li>
+</ul>
+</div>
 </div>
 
 
@@ -234,8 +250,12 @@
 <li class="toctree-l2"><a class="reference internal" href="#check-your-settings">1. Check your settings</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#api-restrictions">2. API Restrictions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#getting-access-to-the-api">3. Getting access to the API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#websocket-support">4. WebSocket Support</a></li>
 </ul>
 </li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="plugins.html">Creating plugins</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="app.html">Harpseal Base</a></li>
@@ -248,7 +268,7 @@
 <ul>
   <li><a href="../index.html">Documentation overview</a><ul>
       <li>Previous: <a href="../index.html" title="previous chapter">Harpseal</a></li>
-      <li>Next: <a href="../usage.html" title="next chapter">&lt;no title&gt;</a></li>
+      <li>Next: <a href="plugins.html" title="next chapter">Creating plugins</a></li>
   </ul></li>
 </ul>
 </div>

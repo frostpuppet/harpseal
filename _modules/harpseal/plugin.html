@@ -152,7 +152,7 @@
         <span class="sd">&quot;&quot;&quot;Execute a command on the event-loop and then return the result when finished.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">Plugin</span><span class="o">.</span><span class="n">_app</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s">&quot;The property ._app is not assigned.&quot;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">execute</span><span class="p">(</span><span class="n">Plugin</span><span class="o">.</span><span class="n">_app</span><span class="p">,</span> <span class="n">command</span><span class="p">)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">execute</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">result</span>
 </div>
     <span class="nd">@asyncio.coroutine</span>

@@ -172,3 +172,22 @@ Response:
            }
        }
    }
+
+4. WebSocket Support
+--------------------
+
+You can use websocket methods by accessing the url ``/``.
+
+The request format is as follows:
+
+.. code-block:: json
+
+   {
+       "request": "handler-name",
+       "params": {}
+   }
+
+
+* The **handler-name** means the method name of :class:`harpseal.web.handler.Handler` which contains ``_handler`` in its name.
+* Params can contain HTTP parameters which are obtained as above such as ``key`` or ``gte``.
+* If you want to pass the *name* of the plugin, you'll have to add ``name`` into your JSON to be able to identify plugin.

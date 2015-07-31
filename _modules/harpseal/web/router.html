@@ -66,7 +66,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span>
             <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">r&#39;/plugins/all&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">plugins_handler</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span>
-            <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">r&#39;/plugins/{name}&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">plugin_handler</span><span class="p">)</span></div></div>
+            <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">r&#39;/plugins/{name}&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">plugin_handler</span><span class="p">)</span>
+        <span class="c"># Websocket handler</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">router</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span>
+            <span class="s">&#39;GET&#39;</span><span class="p">,</span> <span class="s">r&#39;/&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handler</span><span class="o">.</span><span class="n">websocket_handler</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>

@@ -45,43 +45,21 @@
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">shlex</span>
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="kn">import</span> <span class="n">subprocess</span>
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;execute&#39;</span><span class="p">]</span>
 
-<span class="k">class</span> <span class="nc">DataProtocol</span><span class="p">(</span><span class="n">asyncio</span><span class="o">.</span><span class="n">SubprocessProtocol</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exit_future</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_future</span> <span class="o">=</span> <span class="n">exit_future</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="nf">pipe_data_received</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fd</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">output</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">process_exited</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">exit_future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-
 <span class="nd">@asyncio.coroutine</span>
-<div class="viewcode-block" id="execute"><a class="viewcode-back" href="../../../harpseal/utils.html#harpseal.utils.commands.execute">[docs]</a><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+<div class="viewcode-block" id="execute"><a class="viewcode-back" href="../../../harpseal/utils.html#harpseal.utils.commands.execute">[docs]</a><span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="n">command</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Execute a command.&quot;&quot;&quot;</span>
     <span class="n">command</span> <span class="o">=</span> <span class="n">shlex</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
-    <span class="n">exit_future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">()</span>
 
-    <span class="c"># Create the subprocess controlled by the protocol DataProtocol,</span>
-    <span class="c"># redirect the standard output into a pipe</span>
-    <span class="n">process</span> <span class="o">=</span> <span class="n">app</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">subprocess_exec</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">DataProtocol</span><span class="p">(</span><span class="n">exit_future</span><span class="p">),</span>
-                                       <span class="o">*</span><span class="n">command</span><span class="p">,</span> <span class="n">stdin</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
-    <span class="n">transport</span><span class="p">,</span> <span class="n">protocol</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">process</span>
+    <span class="c"># Create the subprocess, redirect the standard output into a pipe</span>
+    <span class="n">process</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">create_subprocess_exec</span><span class="p">(</span><span class="o">*</span><span class="n">command</span><span class="p">,</span> 
+        <span class="n">stdout</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">subprocess</span><span class="o">.</span><span class="n">STDOUT</span><span class="p">)</span>
+    <span class="n">stdout</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">process</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
 
-    <span class="c"># Wait for the subprocess exit using the process_exited() method</span>
-    <span class="c"># of the protocol</span>
-    <span class="k">yield from</span> <span class="n">exit_future</span>
-
-    <span class="c"># Close the stdout pipe</span>
-    <span class="n">transport</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-
-    <span class="c"># Read the output which was collected by the pipe_data_received()</span>
-    <span class="c"># method of the protocol</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">protocol</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span></div>
+    <span class="k">return</span> <span class="n">stdout</span></div>
 </pre></div>
 
           </div>

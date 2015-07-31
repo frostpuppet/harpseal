@@ -79,8 +79,6 @@ References
 .. toctree::
     :maxdepth: 2
 
-    usage
-
     harpseal/app
     harpseal/utils
     harpseal/web
