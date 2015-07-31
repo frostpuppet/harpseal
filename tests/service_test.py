@@ -42,7 +42,12 @@ class TestHarpseal(unittest.TestCase):
         app = yield from self.initapp(loop)
         yield from asyncio.sleep(5)
         
+        # Test for websocket url, expected 400 reponse
         req, body = yield from self.get('/')
+        assert req.status == 400
+
+        # Test for 404
+        req, body = yield from self.get('/~')
         assert req.status == 404
 
         # Test for plugin list
