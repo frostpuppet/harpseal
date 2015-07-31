@@ -98,5 +98,14 @@ class TestHarpseal(unittest.TestCase):
         assert req.status == 200
         assert body['ok']
 
+        # WebSocket test
+        ws = yield from aiohttp.ws_connect('http://127.0.0.1:24680/')
+        ws.send_str('{}')
+        msg = yield from ws.receive()
+        msg = json.loads(msg.data)
+        assert 'error' in msg
+        assert msg['error']
+
         # Delete WebServer instance before quit
+        yield from ws.close()
         del app.web
