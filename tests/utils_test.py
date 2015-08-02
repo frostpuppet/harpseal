@@ -10,7 +10,6 @@ def test_commands():
     @asyncio.coroutine
     def test(future):
         result = yield from commands.execute('pwd')
-        print(result)
         future.set_result(result)
 
     loop = asyncio.get_event_loop()
